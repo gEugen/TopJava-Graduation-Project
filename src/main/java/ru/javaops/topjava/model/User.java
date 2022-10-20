@@ -55,7 +55,7 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime registered;
+    private LocalDateTime registered = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role",
