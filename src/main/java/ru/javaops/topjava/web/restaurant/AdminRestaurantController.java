@@ -61,7 +61,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
         restaurantRepository.delete(id);
     }
 
-    @Operation(summary = "Update restaurant profile by its id", description = "Updates restaurant details")
+    @Operation(summary = "Update restaurant profile by its id", description = "Updates restaurant profile")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)

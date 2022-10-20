@@ -25,9 +25,9 @@ import static ru.javaops.topjava.web.user.UserTestData.USER3_MAIL;
 import static ru.javaops.topjava.web.vote.VoteTestData.*;
 
 
-public class ProfileVoteControllerTest extends AbstractControllerTest {
+public class UserVoteControllerTest extends AbstractControllerTest {
 
-    private static final String REST_URL = ProfileVoteController.REST_URL + '/';
+    private static final String REST_URL = UserVoteController.REST_URL + '/';
 
     @Autowired
     private VoteRepository voteRepository;

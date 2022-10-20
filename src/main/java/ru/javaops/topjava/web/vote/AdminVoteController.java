@@ -25,7 +25,7 @@ public class AdminVoteController {
 
     private final VoteRepository voteRepository;
 
-    @Operation(summary = "Get user votes for selected restaurant", description = "Returns user votes for selected restaurant")
+    @Operation(summary = "Get user votes for selected restaurant by its id", description = "Returns user votes for selected restaurant")
     @GetMapping("/{id}/user-votes")
     public List<Vote> getVotesByRestaurant(@Parameter(description = "id of restaurant") @PathVariable int id) {
         log.info("getWithUsersVotes");

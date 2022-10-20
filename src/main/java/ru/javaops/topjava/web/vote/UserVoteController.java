@@ -22,10 +22,10 @@ import static ru.javaops.topjava.util.RestaurantsUtil.createTo;
 
 
 @RestController
-@RequestMapping(value = ProfileVoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = UserVoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
-public class ProfileVoteController {
+public class UserVoteController {
 
     public static final boolean VOTED = true;
     public static final boolean NOT_VOTED = false;
@@ -43,7 +43,7 @@ public class ProfileVoteController {
     public RestaurantTo getWithVoteMark(
             @AuthenticationPrincipal AuthUser authUser, @Parameter(description = "id of restaurant") @PathVariable int id) {
         int authUserId = authUser.id();
-        log.info("getWithDishesAndVote {} for user {}", id, authUserId);
+        log.info("getWithVoteMark restaurant {} for user {}", id, authUserId);
         Restaurant restaurant = restaurantRepository.getWithDishes(id);
         Integer votedRestaurantId = voteRepository.getVote(authUserId).getRestaurant().getId();
         RestaurantTo restaurantTo;
@@ -61,7 +61,7 @@ public class ProfileVoteController {
     @GetMapping()
     public List<RestaurantTo> getAllWithVoteMark(@AuthenticationPrincipal AuthUser authUser) {
         int authUserId = authUser.id();
-        log.info("getAllWithDishesAndVote for user {}", authUserId);
+        log.info("getAllWithVoteMark for user {}", authUserId);
         List<Restaurant> restaurants = restaurantRepository.getAllWithDishes();
         Integer votedRestaurantId = voteRepository.getVote(authUserId).getRestaurant().getId();
         List<RestaurantTo> restaurantToList = new ArrayList<>();
@@ -75,7 +75,7 @@ public class ProfileVoteController {
         return restaurantToList;
     }
 
-    @Operation(summary = "Vote for restaurant selected by user", description = "Marks restaurant as voted selected by user")
+    @Operation(summary = "Vote for restaurant selected by user", description = "Marks restaurant as voted one selected by user")
     @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void vote(@AuthenticationPrincipal AuthUser authUser, @Parameter(description = "id of restaurant") @PathVariable int id) {
