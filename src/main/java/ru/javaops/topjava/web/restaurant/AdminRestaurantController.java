@@ -3,6 +3,9 @@ package ru.javaops.topjava.web.restaurant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +24,14 @@ import static ru.javaops.topjava.util.validation.ValidationUtil.checkNew;
 @RestController
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
+@CacheConfig(cacheNames = "restaurants")
 public class AdminRestaurantController extends AbstractRestaurantController {
 
     static final String REST_URL = "/api/admin/restaurant";
 
     @Operation(summary = "Get restaurant profile list", description = "Returns restaurant profile list")
     @GetMapping()
+    @Cacheable
     public List<Restaurant> getAll() {
         log.info("getAll");
         return restaurantRepository.findAll();
@@ -50,6 +55,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @Operation(summary = "Delete restaurant profile by its id", description = "Delete restaurant profile")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(allEntries = true)
     public void delete(@Parameter(description = "id of restaurant") @PathVariable int id) {
         log.info("delete {}", id);
         restaurantRepository.delete(id);
@@ -58,6 +64,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @Operation(summary = "Update restaurant profile by its id", description = "Updates restaurant details")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CacheEvict(allEntries = true)
     public void update(
             @Parameter(description = "updated restaurant profile") @Valid @RequestBody Restaurant restaurant,
             @Parameter(description = "id of restaurant") @PathVariable int id) {
@@ -69,6 +76,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
 
     @Operation(summary = "Create new restaurant profile", description = "Creates new restaurant profile and returns response with it")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(allEntries = true)
     public ResponseEntity<Restaurant> createWithLocation(
             @Parameter(description = "created restaurant profile") @Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);
