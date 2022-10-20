@@ -19,7 +19,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.Set;
 
 
 @Entity
@@ -51,7 +55,7 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
     @Column(name = "registered", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Date registered = new Date();
+    private LocalDateTime registered;
 
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "user_role",
@@ -73,10 +77,10 @@ public class User extends NamedEntity implements HasIdAndEmail, Serializable {
     }
 
     public User(Integer id, String name, String email, String password, Role... roles) {
-        this(id, name, email, password, true, new Date(), Arrays.asList(roles));
+        this(id, name, email, password, true, LocalDateTime.now(), Arrays.asList(roles));
     }
 
-    public User(Integer id, String name, String email, String password, boolean enabled, Date registered, Collection<Role> roles) {
+    public User(Integer id, String name, String email, String password, boolean enabled, LocalDateTime registered, Collection<Role> roles) {
         super(id, name);
         this.email = email;
         this.password = password;

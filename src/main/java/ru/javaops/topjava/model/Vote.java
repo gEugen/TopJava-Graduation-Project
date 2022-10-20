@@ -31,6 +31,7 @@ public class Vote extends BaseEntity {
     @Column(name = "time", nullable = false, columnDefinition = "TIME DEFAULT CURRENT_TIME")
     @NotNull
     @DateTimeFormat(pattern = DateTimeUtil.TIME_PATTERN)
+    @Schema(type = "date-time", pattern = "HH:mm:ss")
     private LocalTime voteTime;
 
     @ManyToOne

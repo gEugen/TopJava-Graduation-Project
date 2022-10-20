@@ -5,9 +5,8 @@ import ru.javaops.topjava.model.User;
 import ru.javaops.topjava.util.JsonUtil;
 import ru.javaops.topjava.web.MatcherFactory;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 
 public class UserTestData {
@@ -40,11 +39,11 @@ public class UserTestData {
     public static final User user5 = new User(USER5_ID, "User5", USER5_MAIL, "password5", Role.USER);
 
     public static User getNew() {
-        return new User(null, "New", "new@gmail.com", "newPass", false, new Date(), Collections.singleton(Role.USER));
+        return new User(null, "New", "new@gmail.com", "newPass", false, LocalDateTime.now(), Collections.singleton(Role.USER));
     }
 
     public static User getUpdated() {
-        return new User(USER1_ID, "UpdatedName", USER1_MAIL, "newPass", false, new Date(), List.of(Role.ADMIN));
+        return new User(USER1_ID, "UpdatedName", USER1_MAIL, "newPass", Role.ADMIN);
     }
 
     public static String jsonWithPassword(User user, String password) {
