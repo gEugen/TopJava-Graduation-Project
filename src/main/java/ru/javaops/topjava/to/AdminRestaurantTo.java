@@ -20,6 +20,11 @@ public class AdminRestaurantTo extends NamedTo implements HasIdAndEmail {
     @NoHtml  // https://stackoverflow.com/questions/17480809
     String email;
 
+    public AdminRestaurantTo(Integer id, String name, String email) {
+        super(id, name);
+        this.email = email;
+    }
+
     public AdminRestaurantTo(Restaurant restaurant) {
         super(restaurant.getId(), restaurant.getName());
         this.email = restaurant.getEmail();

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javaops.topjava.model.Restaurant;
 import ru.javaops.topjava.repository.RestaurantRepository;
 import ru.javaops.topjava.repository.UserRepository;
+import ru.javaops.topjava.to.AdminRestaurantTo;
 import ru.javaops.topjava.util.JsonUtil;
 import ru.javaops.topjava.web.AbstractControllerTest;
 
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.javaops.topjava.util.RestaurantsUtil.createTo;
 import static ru.javaops.topjava.util.RestaurantsUtil.createTos;
 import static ru.javaops.topjava.util.Util.initializeAndUnproxy;
 import static ru.javaops.topjava.web.restaurant.RestaurantTestData.NOT_FOUND;
@@ -78,16 +80,16 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void createWithLocation() throws Exception {
-        Restaurant aNew = RestaurantTestData.getNew();
+        AdminRestaurantTo aNew = RestaurantTestData.getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(aNew)));
 
-        Restaurant created = RESTAURANT_MATCHER.readFromJson(action);
+        AdminRestaurantTo created = RESTAURANT_TO_MATCHER.readFromJson(action);
         int newId = created.id();
         aNew.setId(newId);
-        RESTAURANT_MATCHER.assertMatch(created, aNew);
-        RESTAURANT_MATCHER.assertMatch(restaurantRepository.getExisted(newId), aNew);
+        RESTAURANT_TO_MATCHER.assertMatch(created, aNew);
+        RESTAURANT_TO_MATCHER.assertMatch(createTo(restaurantRepository.getExisted(newId)), aNew);
     }
 
     @Test
@@ -151,7 +153,7 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
     void updateDuplicate() throws Exception {
-        Restaurant invalid = new Restaurant(RESTAURANT2_ID, "ASTORIA", RESTAURANT1_MAIL);
+        AdminRestaurantTo invalid = new AdminRestaurantTo(RESTAURANT2_ID, "ASTORIA", RESTAURANT1_MAIL);
         perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT2_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(invalid)))

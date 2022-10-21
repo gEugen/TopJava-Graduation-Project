@@ -43,9 +43,9 @@ spring:
 
 logging:
   level:
-    org:
-      hibernate:
-        type: trace
+#    org:
+#      hibernate:
+#        type: trace
     root: WARN
     ru.javaops.topjava: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG

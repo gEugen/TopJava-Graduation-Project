@@ -2,6 +2,7 @@ package ru.javaops.topjava.web.restaurant;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -9,9 +10,11 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javaops.topjava.model.Restaurant;
+import ru.javaops.topjava.repository.RestaurantRepository;
 import ru.javaops.topjava.to.AdminRestaurantTo;
 
 import javax.validation.Valid;
@@ -27,9 +30,19 @@ import static ru.javaops.topjava.util.validation.ValidationUtil.checkNew;
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @CacheConfig(cacheNames = "restaurants")
-public class AdminRestaurantController extends AbstractRestaurantController {
+@AllArgsConstructor
+public class AdminRestaurantController {
 
     static final String REST_URL = "/api/admin/restaurant";
+
+    private final RestaurantRepository restaurantRepository;
+
+    private final RestaurantUniqueMailValidator emailValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder) {
+        binder.addValidators(emailValidator);
+    }
 
     @Operation(summary = "Get restaurant profile list", description = "Returns restaurant profile list")
     @GetMapping()

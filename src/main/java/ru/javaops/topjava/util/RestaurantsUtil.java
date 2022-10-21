@@ -27,4 +27,8 @@ public class RestaurantsUtil {
                 .sorted(Comparator.comparing(AdminRestaurantTo::getName).thenComparing(AdminRestaurantTo::getEmail))
                 .collect(Collectors.toList());
     }
+
+    public static AdminRestaurantTo createTo(Restaurant restaurant) {
+        return new AdminRestaurantTo(restaurant.getId(), restaurant.getName(), restaurant.getEmail());
+    }
 }

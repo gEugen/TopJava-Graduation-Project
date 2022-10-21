@@ -14,7 +14,6 @@ import static ru.javaops.topjava.web.vote.VoteTestData.user1Vote;
 
 
 public class RestaurantTestData {
-    public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class);
 
     public static final MatcherFactory.Matcher<AdminRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(AdminRestaurantTo.class);
 
@@ -90,8 +89,8 @@ public class RestaurantTestData {
         return updatedForCompare;
     }
 
-    public static Restaurant getNew() {
-        return new Restaurant(null, "NEW_RESTAURANT", "new_restaurant@mail.ru");
+    public static AdminRestaurantTo getNew() {
+        return new AdminRestaurantTo(null, "NEW_RESTAURANT", "new_restaurant@mail.ru");
     }
 
     public static List<Restaurant> getListOfRestaurants() {
