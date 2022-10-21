@@ -19,7 +19,7 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "restaurants")
+@Table(name = "restaurants", indexes = @Index(name = "restaurant_unique_email_idx", columnList = "email"))
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -52,7 +52,7 @@ public class Restaurant extends NamedEntity implements HasIdAndEmail {
         this(r.id, r.name, r.email);
     }
 
-    public Restaurant(Integer id, String name, String email, List<Dish> dishes, List<User> users) {
+    public Restaurant(Integer id, String name, String email, List<Dish> dishes) {
         super(id, name);
         this.email = email;
         this.dishes = dishes;
