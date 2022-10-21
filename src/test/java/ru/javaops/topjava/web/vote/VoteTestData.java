@@ -1,6 +1,7 @@
 package ru.javaops.topjava.web.vote;
 
 import ru.javaops.topjava.model.Vote;
+import ru.javaops.topjava.to.VoteRestaurantTo;
 import ru.javaops.topjava.web.MatcherFactory;
 
 import java.util.List;
@@ -17,6 +18,8 @@ public class VoteTestData {
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(
                     Vote.class, "voteDate", "voteTime", "restaurant", "user.password", "user.registered", "user.vote");
+
+    public static final MatcherFactory.Matcher<VoteRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteRestaurantTo.class);
 
     public static final int VOTE1_ID = 1;
     public static final int VOTE2_ID = 2;

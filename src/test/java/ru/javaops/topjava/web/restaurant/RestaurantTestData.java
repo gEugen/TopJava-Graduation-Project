@@ -2,7 +2,7 @@ package ru.javaops.topjava.web.restaurant;
 
 import ru.javaops.topjava.model.Restaurant;
 import ru.javaops.topjava.model.Vote;
-import ru.javaops.topjava.to.RestaurantTo;
+import ru.javaops.topjava.to.AdminRestaurantTo;
 import ru.javaops.topjava.web.MatcherFactory;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import static ru.javaops.topjava.web.vote.VoteTestData.user1Vote;
 public class RestaurantTestData {
     public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class);
 
-    public static final MatcherFactory.Matcher<RestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(RestaurantTo.class);
+    public static final MatcherFactory.Matcher<AdminRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(AdminRestaurantTo.class);
 
     public static MatcherFactory.Matcher<Restaurant> RESTAURANT_UPDATE_MATCHER =
             MatcherFactory.usingAssertions(Restaurant.class,

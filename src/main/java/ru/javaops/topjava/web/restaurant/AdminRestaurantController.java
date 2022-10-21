@@ -12,11 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javaops.topjava.model.Restaurant;
+import ru.javaops.topjava.to.AdminRestaurantTo;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
+import static ru.javaops.topjava.util.RestaurantsUtil.createTos;
 import static ru.javaops.topjava.util.validation.ValidationUtil.assureIdConsistent;
 import static ru.javaops.topjava.util.validation.ValidationUtil.checkNew;
 
@@ -32,9 +34,9 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @Operation(summary = "Get restaurant profile list", description = "Returns restaurant profile list")
     @GetMapping()
     @Cacheable
-    public List<Restaurant> getAll() {
+    public List<AdminRestaurantTo> getAll() {
         log.info("getAll");
-        return restaurantRepository.findAll();
+        return createTos(restaurantRepository.findAll());
     }
 
     @Operation(summary = "Get restaurant profile by its id", description = "Returns response with found restaurant profile")
@@ -66,10 +68,11 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
     public void update(
-            @Parameter(description = "updated restaurant profile") @Valid @RequestBody Restaurant restaurant,
+            @Parameter(description = "updated restaurant profile") @Valid @RequestBody AdminRestaurantTo restaurantTo,
             @Parameter(description = "id of restaurant") @PathVariable int id) {
         log.info("update {}", id);
-        assureIdConsistent(restaurant, id);
+        assureIdConsistent(restaurantTo, id);
+        Restaurant restaurant = new Restaurant(restaurantTo);
         restaurant.setVote(restaurantRepository.getExisted(id).getVote());
         restaurantRepository.save(restaurant);
     }
@@ -78,10 +81,10 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(allEntries = true)
     public ResponseEntity<Restaurant> createWithLocation(
-            @Parameter(description = "created restaurant profile") @Valid @RequestBody Restaurant restaurant) {
-        log.info("create {}", restaurant);
-        checkNew(restaurant);
-        Restaurant created = restaurantRepository.save(restaurant);
+            @Parameter(description = "created restaurant profile") @Valid @RequestBody AdminRestaurantTo restaurantTo) {
+        log.info("create {}", restaurantTo);
+        checkNew(restaurantTo);
+        Restaurant created = restaurantRepository.save(new Restaurant(restaurantTo));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();

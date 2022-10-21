@@ -12,7 +12,7 @@ import ru.javaops.topjava.model.Restaurant;
 import ru.javaops.topjava.repository.RestaurantRepository;
 import ru.javaops.topjava.repository.VoteRepository;
 import ru.javaops.topjava.service.VoteService;
-import ru.javaops.topjava.to.RestaurantTo;
+import ru.javaops.topjava.to.VoteRestaurantTo;
 import ru.javaops.topjava.web.AuthUser;
 
 import java.util.ArrayList;
@@ -40,39 +40,39 @@ public class UserVoteController {
 
     @Operation(summary = "Get restaurant with vote mark by user", description = "Returns restaurant with vote mark")
     @GetMapping("/{id}/with-dishes-and-vote")
-    public RestaurantTo getWithVoteMark(
+    public VoteRestaurantTo getWithVoteMark(
             @AuthenticationPrincipal AuthUser authUser, @Parameter(description = "id of restaurant") @PathVariable int id) {
         int authUserId = authUser.id();
         log.info("getWithVoteMark restaurant {} for user {}", id, authUserId);
         Restaurant restaurant = restaurantRepository.getWithDishes(id);
         Integer votedRestaurantId = voteRepository.getVote(authUserId).getRestaurant().getId();
-        RestaurantTo restaurantTo;
+        VoteRestaurantTo voteRestaurantTo;
         if (votedRestaurantId != null && votedRestaurantId == id) {
-            restaurantTo = createTo(restaurant, VOTED);
+            voteRestaurantTo = createTo(restaurant, VOTED);
         } else {
-            restaurantTo = createTo(restaurant, NOT_VOTED);
+            voteRestaurantTo = createTo(restaurant, NOT_VOTED);
         }
-        return restaurantTo;
+        return voteRestaurantTo;
     }
 
     @Operation(
             summary = "Get restaurant list with vote marks for each one by user",
             description = "Returns restaurant list with vote marks")
     @GetMapping()
-    public List<RestaurantTo> getAllWithVoteMark(@AuthenticationPrincipal AuthUser authUser) {
+    public List<VoteRestaurantTo> getAllWithVoteMark(@AuthenticationPrincipal AuthUser authUser) {
         int authUserId = authUser.id();
         log.info("getAllWithVoteMark for user {}", authUserId);
         List<Restaurant> restaurants = restaurantRepository.getAllWithDishes();
         Integer votedRestaurantId = voteRepository.getVote(authUserId).getRestaurant().getId();
-        List<RestaurantTo> restaurantToList = new ArrayList<>();
+        List<VoteRestaurantTo> voteRestaurantToList = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
             if (votedRestaurantId != null && votedRestaurantId.equals(restaurant.getId())) {
-                restaurantToList.add(createTo(restaurant, VOTED));
+                voteRestaurantToList.add(createTo(restaurant, VOTED));
             } else {
-                restaurantToList.add(createTo(restaurant, NOT_VOTED));
+                voteRestaurantToList.add(createTo(restaurant, NOT_VOTED));
             }
         }
-        return restaurantToList;
+        return voteRestaurantToList;
     }
 
     @Operation(summary = "Vote for restaurant selected by user", description = "Marks restaurant as voted one selected by user")

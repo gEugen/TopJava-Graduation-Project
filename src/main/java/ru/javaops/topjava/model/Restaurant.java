@@ -9,6 +9,7 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import ru.javaops.topjava.HasIdAndEmail;
+import ru.javaops.topjava.to.AdminRestaurantTo;
 import ru.javaops.topjava.util.validation.NoHtml;
 
 import javax.persistence.*;
@@ -37,7 +38,7 @@ public class Restaurant extends NamedEntity implements HasIdAndEmail {
     @Schema(hidden = true)
     private List<Dish> dishes;
 
-    @OneToMany(mappedBy = "restaurant")
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private List<Vote> vote;
@@ -56,6 +57,11 @@ public class Restaurant extends NamedEntity implements HasIdAndEmail {
         super(id, name);
         this.email = email;
         this.dishes = dishes;
+    }
+
+    public Restaurant(AdminRestaurantTo restaurantTo) {
+        super(restaurantTo.getId(), restaurantTo.getName());
+        this.email = restaurantTo.getEmail();
     }
 
     @Override

@@ -23,6 +23,7 @@ import static ru.javaops.topjava.web.restaurant.RestaurantTestData.*;
 import static ru.javaops.topjava.web.user.UserTestData.USER2_MAIL;
 import static ru.javaops.topjava.web.user.UserTestData.USER3_MAIL;
 import static ru.javaops.topjava.web.vote.VoteTestData.*;
+import static ru.javaops.topjava.web.vote.VoteTestData.RESTAURANT_TO_MATCHER;
 
 
 public class UserVoteControllerTest extends AbstractControllerTest {

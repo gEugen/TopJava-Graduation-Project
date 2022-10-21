@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.javaops.topjava.util.RestaurantsUtil.createTos;
 import static ru.javaops.topjava.util.Util.initializeAndUnproxy;
 import static ru.javaops.topjava.web.restaurant.RestaurantTestData.NOT_FOUND;
 import static ru.javaops.topjava.web.restaurant.RestaurantTestData.*;
@@ -43,7 +44,7 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_MATCHER.contentJson(restaurants));
+                .andExpect(RESTAURANT_TO_MATCHER.contentJson(createTos(restaurants)));
     }
 
     @Test
