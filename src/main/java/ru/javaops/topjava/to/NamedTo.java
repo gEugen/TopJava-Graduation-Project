@@ -7,6 +7,7 @@ import ru.javaops.topjava.util.validation.NoHtml;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class NamedTo extends BaseTo {

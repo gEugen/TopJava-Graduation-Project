@@ -7,6 +7,7 @@ import ru.javaops.topjava.model.User;
 
 import static java.util.Objects.requireNonNull;
 
+
 @UtilityClass
 public class SecurityUtil {
 

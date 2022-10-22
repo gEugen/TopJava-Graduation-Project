@@ -3,6 +3,7 @@ package ru.javaops.topjava;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.Assert;
 
+
 public interface HasId {
     Integer getId();
 

@@ -7,6 +7,7 @@ import ru.javaops.topjava.to.UserTo;
 
 import static ru.javaops.topjava.config.SecurityConfiguration.PASSWORD_ENCODER;
 
+
 @UtilityClass
 public class UserUtil {
 

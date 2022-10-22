@@ -7,6 +7,7 @@ import ru.javaops.topjava.to.VoteRestaurantTo;
 import java.util.*;
 import java.util.stream.Collectors;
 
+
 public class RestaurantsUtil {
 
     public static VoteRestaurantTo createTo(Restaurant restaurant, boolean vote) {

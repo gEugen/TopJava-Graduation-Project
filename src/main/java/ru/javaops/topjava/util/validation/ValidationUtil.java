@@ -6,6 +6,7 @@ import org.springframework.lang.NonNull;
 import ru.javaops.topjava.HasId;
 import ru.javaops.topjava.error.IllegalRequestDataException;
 
+
 @UtilityClass
 public class ValidationUtil {
 
@@ -29,6 +30,7 @@ public class ValidationUtil {
             throw new IllegalRequestDataException("Entity with id=" + id + " not found");
         }
     }
+
     public static <T> T checkExisted(T obj, int id) {
         if (obj == null) {
             throw new IllegalRequestDataException("Entity with id=" + id + " not found");

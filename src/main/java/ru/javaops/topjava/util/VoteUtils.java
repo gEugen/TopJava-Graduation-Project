@@ -6,6 +6,7 @@ import ru.javaops.topjava.to.VoteTo;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class VoteUtils {
 
     public static List<VoteTo> createTos(List<Vote> votes) {

@@ -8,6 +8,7 @@ import ru.javaops.topjava.model.Dish;
 import java.util.List;
 import java.util.Optional;
 
+
 @Transactional(readOnly = true)
 public interface DishRepository extends BaseRepository<Dish> {
 

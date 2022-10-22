@@ -8,6 +8,7 @@ import ru.javaops.topjava.model.Vote;
 
 import java.util.List;
 
+
 @Transactional(readOnly = true)
 public interface VoteRepository extends BaseRepository<Vote> {
 

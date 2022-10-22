@@ -5,6 +5,7 @@ import lombok.ToString;
 import org.springframework.lang.NonNull;
 import ru.javaops.topjava.model.User;
 
+
 @Getter
 @ToString(of = "user")
 public class AuthUser extends org.springframework.security.core.userdetails.User {

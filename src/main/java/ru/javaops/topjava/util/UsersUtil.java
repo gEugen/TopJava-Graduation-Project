@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class UsersUtil {
     public static List<User> getOrderedList(User... users) {
         return Arrays.stream(users)

@@ -9,6 +9,7 @@ import ru.javaops.topjava.HasId;
 
 import javax.persistence.*;
 
+
 @MappedSuperclass
 //  https://stackoverflow.com/a/6084701/548473
 @Access(AccessType.FIELD)

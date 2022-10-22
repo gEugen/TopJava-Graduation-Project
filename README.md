@@ -1,3 +1,5 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/db15e1c8a2ab4d019a49e89fcf0296a4)](https://www.codacy.com/gh/gEugen/TopJavaGraduationProject/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gEugen/TopJavaGraduationProject&amp;utm_campaign=Badge_Grade)
+=================================================
 Graduation work on Java Enterprise Online Project
 =================================================
 -------------------------------------------------

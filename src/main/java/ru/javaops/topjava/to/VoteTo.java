@@ -11,6 +11,7 @@ import ru.javaops.topjava.util.DateTimeUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class VoteTo extends BaseTo {

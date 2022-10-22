@@ -8,6 +8,7 @@ import ru.javaops.topjava.model.Restaurant;
 import java.util.List;
 import java.util.Optional;
 
+
 @Transactional(readOnly = true)
 public interface RestaurantRepository extends BaseRepository<Restaurant> {
 

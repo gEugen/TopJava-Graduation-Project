@@ -20,6 +20,7 @@ import ru.javaops.topjava.web.AuthUser;
 
 import java.util.Optional;
 
+
 @Configuration
 @EnableWebSecurity
 @Slf4j
