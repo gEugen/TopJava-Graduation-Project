@@ -14,6 +14,9 @@ public class VoteUtils {
     }
 
     public static VoteTo createTo(Vote vote) {
-        return new VoteTo(vote);
+        if (vote != null) {
+            return new VoteTo(vote);
+        }
+        return null;
     }
 }

@@ -54,7 +54,8 @@ public class DishController {
             @Parameter(description = "id of restaurant") @PathVariable int restaurantId,
             @Parameter(description = "id of dish") @PathVariable int dishId) {
         log.info("get dish {} for restaurant {}", dishId, restaurantId);
-        return ResponseEntity.of(dishRepository.get(dishId, restaurantId));
+        dishRepository.checkBelong(dishId, restaurantId);
+        return ResponseEntity.of(dishRepository.findById(dishId));
     }
 
     @Operation(summary = "Delete dish for restaurant by its ides", description = "Deletes dish")

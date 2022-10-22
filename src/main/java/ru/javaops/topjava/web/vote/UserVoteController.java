@@ -40,7 +40,7 @@ public class UserVoteController {
     public static final boolean VOTED = true;
     public static final boolean NOT_VOTED = false;
 
-    static final String REST_URL = "/api/profile/vote/restaurant";
+    static final String REST_URL = "/api/user/vote/restaurant";
 
     private final VoteService voteService;
 
@@ -97,7 +97,7 @@ public class UserVoteController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User vote was updated"),
             @ApiResponse(responseCode = "201", description = "New vote was created"),
-            @ApiResponse(responseCode = "403", description = "Time is over for voting. Returns previous vote"),
+            @ApiResponse(responseCode = "403", description = "Time is over for voting. Returns previous vote or null if no vote for current day"),
             @ApiResponse(responseCode = "422", description = "Unable to process vote")})
     @PostMapping("/{id}")
     public ResponseEntity<VoteTo> vote(@AuthenticationPrincipal AuthUser authUser, @Parameter(description = "id of " +
