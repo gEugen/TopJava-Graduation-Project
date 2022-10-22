@@ -55,7 +55,11 @@ public class UserVoteController {
         int authUserId = authUser.id();
         log.info("getWithVoteMark restaurant {} for user {}", id, authUserId);
         Restaurant restaurant = restaurantRepository.getWithDishes(id);
-        Integer votedRestaurantId = voteRepository.getVote(authUserId).getRestaurant().getId();
+        Vote vote = voteRepository.getVote(authUserId);
+        Integer votedRestaurantId = null;
+        if (vote != null) {
+            votedRestaurantId = vote.getRestaurant().getId();
+        }
         VoteRestaurantTo voteRestaurantTo;
         if (votedRestaurantId != null && votedRestaurantId == id) {
             voteRestaurantTo = createTo(restaurant, VOTED);
@@ -73,7 +77,11 @@ public class UserVoteController {
         int authUserId = authUser.id();
         log.info("getAllWithVoteMark for user {}", authUserId);
         List<Restaurant> restaurants = restaurantRepository.getAllWithDishes();
-        Integer votedRestaurantId = voteRepository.getVote(authUserId).getRestaurant().getId();
+        Vote vote = voteRepository.getVote(authUserId);
+        Integer votedRestaurantId = null;
+        if (vote != null) {
+            votedRestaurantId = vote.getRestaurant().getId();
+        }
         List<VoteRestaurantTo> voteRestaurantToList = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
             if (votedRestaurantId != null && votedRestaurantId.equals(restaurant.getId())) {
