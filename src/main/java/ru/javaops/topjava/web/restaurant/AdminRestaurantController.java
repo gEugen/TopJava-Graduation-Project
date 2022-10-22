@@ -73,7 +73,7 @@ public class AdminRestaurantController {
     @CacheEvict(allEntries = true)
     public void delete(@Parameter(description = "id of restaurant") @PathVariable int id) {
         log.info("delete {}", id);
-        restaurantRepository.delete(id);
+        restaurantRepository.deleteExisted(id);
     }
 
     @Operation(summary = "Update restaurant profile by its id", description = "Updates restaurant profile")

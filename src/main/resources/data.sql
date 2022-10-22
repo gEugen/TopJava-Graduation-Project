@@ -12,7 +12,8 @@ VALUES ('User1', 'user1@yandex.ru', '{noop}password1'),
        ('Admin', 'admin@gmail.com', '{noop}admin'),
        ('Guest', 'guest@gmail.com', '{noop}guest'),
        ('User4', 'user4@yandex.ru', '{noop}password4'),
-       ('User5', 'user5@yandex.ru', '{noop}password5');
+       ('User5', 'user5@yandex.ru', '{noop}password5'),
+       ('User6', 'user6@yandex.ru', '{noop}password6');
 
 INSERT INTO USER_ROLE (ROLE, USER_ID)
 VALUES ('USER', 1),

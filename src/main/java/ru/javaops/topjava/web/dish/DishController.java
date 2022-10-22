@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javaops.topjava.model.Dish;
 import ru.javaops.topjava.repository.DishRepository;
+import ru.javaops.topjava.repository.RestaurantRepository;
 import ru.javaops.topjava.service.DishService;
 
 import javax.validation.Valid;
@@ -32,15 +33,19 @@ import static ru.javaops.topjava.util.validation.ValidationUtil.checkNew;
 public class DishController {
     static final String REST_URL = "/api/admin/restaurant/{restaurantId}/dish";
 
-    private final DishRepository repository;
-    private final DishService service;
+    private final DishService dishService;
+
+    private final DishRepository dishRepository;
+
+    private final RestaurantRepository restaurantRepository;
 
     @Operation(summary = "Get dish list for restaurant by its id", description = "Returns dish list")
     @GetMapping()
     @Cacheable
     public List<Dish> getAllForRestaurant(@Parameter(description = "id of restaurant") @PathVariable int restaurantId) {
         log.info("get {}", restaurantId);
-        return repository.getAll(restaurantId);
+        restaurantRepository.getExisted(restaurantId);
+        return dishRepository.getAll(restaurantId);
     }
 
     @Operation(summary = "Get dish for restaurant by its ides", description = "Returns response with dish")
@@ -49,7 +54,7 @@ public class DishController {
             @Parameter(description = "id of restaurant") @PathVariable int restaurantId,
             @Parameter(description = "id of dish") @PathVariable int dishId) {
         log.info("get dish {} for restaurant {}", dishId, restaurantId);
-        return ResponseEntity.of(repository.get(dishId, restaurantId));
+        return ResponseEntity.of(dishRepository.get(dishId, restaurantId));
     }
 
     @Operation(summary = "Delete dish for restaurant by its ides", description = "Deletes dish")
@@ -60,8 +65,8 @@ public class DishController {
             @Parameter(description = "id of restaurant") @PathVariable int restaurantId,
             @Parameter(description = "id of dish") @PathVariable int dishId) {
         log.info("delete {} for restaurant {}", restaurantId, dishId);
-        Dish dish = repository.checkBelong(dishId, restaurantId);
-        repository.delete(dish);
+        Dish dish = dishRepository.checkBelong(dishId, restaurantId);
+        dishRepository.delete(dish);
     }
 
     @Operation(
@@ -76,8 +81,8 @@ public class DishController {
             @Parameter(description = "id of dish") @PathVariable int dishId) {
         log.info("update {} for restaurant {}", dish, restaurantId);
         assureIdConsistent(dish, dishId);
-        repository.checkBelong(dishId, restaurantId);
-        service.save(dish, restaurantId);
+        dishRepository.checkBelong(dishId, restaurantId);
+        dishService.save(dish, restaurantId);
     }
 
     @Operation(
@@ -89,7 +94,7 @@ public class DishController {
             @Parameter(description = "id of restaurant") @PathVariable int restaurantId) {
         log.info("create {} for restaurant {}", dish, restaurantId);
         checkNew(dish);
-        Dish created = service.save(dish, restaurantId);
+        Dish created = dishService.save(dish, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{dishId}")
                 .buildAndExpand(restaurantId, created.getId()).toUri();

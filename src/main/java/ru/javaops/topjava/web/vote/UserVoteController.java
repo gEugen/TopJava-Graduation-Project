@@ -6,15 +6,21 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javaops.topjava.model.Restaurant;
+import ru.javaops.topjava.model.Vote;
 import ru.javaops.topjava.repository.RestaurantRepository;
 import ru.javaops.topjava.repository.VoteRepository;
 import ru.javaops.topjava.service.VoteService;
 import ru.javaops.topjava.to.VoteRestaurantTo;
 import ru.javaops.topjava.web.AuthUser;
 
+import java.net.URI;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,10 +83,29 @@ public class UserVoteController {
 
     @Operation(summary = "Vote for restaurant selected by user", description = "Marks restaurant as voted one selected by user")
     @PostMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void vote(@AuthenticationPrincipal AuthUser authUser, @Parameter(description = "id of restaurant") @PathVariable int id) {
+    public ResponseEntity<Vote> vote(@AuthenticationPrincipal AuthUser authUser, @Parameter(description = "id of restaurant") @PathVariable int id) {
         int authUserId = authUser.id();
+        Vote previousVote = voteRepository.getVote(authUserId);
+        if (previousVote != null) {
+            previousVote = new Vote(voteRepository.getVote(authUserId));
+        }
         log.info("vote {} by user {}", id, authUserId);
-        voteService.saveWithVote(authUserId, id);
+        Vote vote = voteService.saveWithVote(previousVote, authUserId, id);
+        LocalDate previousVoteDate = null;
+        LocalTime previousVoteTime = null;
+        if (previousVote != null) {
+            previousVoteDate = previousVote.getVoteDate();
+            previousVoteTime = previousVote.getVoteTime();
+        }
+        if (vote != null && (previousVote == null || previousVoteDate.isBefore(vote.getVoteDate()))) {
+            URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path(REST_URL + "/{id}")
+                    .buildAndExpand(vote.getId()).toUri();
+            return ResponseEntity.created(uriOfNewResource).body(vote);
+        }
+        if (vote != null && previousVoteDate.isEqual(vote.getVoteDate()) && previousVoteTime.isBefore(vote.getVoteTime())) {
+            return ResponseEntity.ok(vote);
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(previousVote);
     }
 }

@@ -38,7 +38,7 @@ public class Restaurant extends NamedEntity implements HasIdAndEmail {
     @Schema(hidden = true)
     private List<Dish> dishes;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "restaurant")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
     private List<Vote> vote;

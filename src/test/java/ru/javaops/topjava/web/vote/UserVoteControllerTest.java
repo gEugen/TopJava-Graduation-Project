@@ -20,10 +20,9 @@ import static ru.javaops.topjava.util.DateTimeUtil.TIME_FORMATTER;
 import static ru.javaops.topjava.util.RestaurantsUtil.createTo;
 import static ru.javaops.topjava.util.RestaurantsUtil.createTos;
 import static ru.javaops.topjava.web.restaurant.RestaurantTestData.*;
-import static ru.javaops.topjava.web.user.UserTestData.USER2_MAIL;
-import static ru.javaops.topjava.web.user.UserTestData.USER3_MAIL;
-import static ru.javaops.topjava.web.vote.VoteTestData.*;
+import static ru.javaops.topjava.web.user.UserTestData.*;
 import static ru.javaops.topjava.web.vote.VoteTestData.RESTAURANT_TO_MATCHER;
+import static ru.javaops.topjava.web.vote.VoteTestData.*;
 
 
 public class UserVoteControllerTest extends AbstractControllerTest {
@@ -59,12 +58,23 @@ public class UserVoteControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    @WithUserDetails(value = USER6_MAIL)
+    void validVoteWithCreation() throws Exception {
+        END_VOTE_TIME = LocalTime.parse(LocalTime.MAX.format(TIME_FORMATTER));
+        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT2_ID))
+                .andDo(print())
+                .andExpect(status().isCreated());
+
+        VOTE_SAVE_MATCHER.assertMatch(voteRepository.getVotesByRestaurant(RESTAURANT2_ID), List.of(user6Vote));
+    }
+
+    @Test
     @WithUserDetails(value = USER3_MAIL)
-    void validVote() throws Exception {
+    void validVoteWithUpdating() throws Exception {
         END_VOTE_TIME = LocalTime.parse(LocalTime.MAX.format(TIME_FORMATTER));
         perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT1_ID))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
         List<Vote> currentVotes = voteRepository.getVotesByRestaurant(RESTAURANT1_ID);
         List<Vote> previousVotes = voteRepository.getVotesByRestaurant(RESTAURANT3_ID);
@@ -74,11 +84,11 @@ public class UserVoteControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(value = USER3_MAIL)
-    void nonValidVote() throws Exception {
+    void nonValidVoteAfterTimeIsOver() throws Exception {
         END_VOTE_TIME = LocalTime.parse(LocalTime.MIN.format(TIME_FORMATTER));
         perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT1_ID))
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isForbidden());
 
         List<Vote> currentVotes = voteRepository.getVotesByRestaurant(RESTAURANT1_ID);
         List<Vote> previousVotes = voteRepository.getVotesByRestaurant(RESTAURANT3_ID);

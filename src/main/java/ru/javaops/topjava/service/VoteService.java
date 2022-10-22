@@ -26,19 +26,19 @@ public class VoteService {
     private final VoteRepository voteRepository;
 
     @Transactional
-    public void saveWithVote(int authUserId, int id) {
-        Vote vote = voteRepository.getVote(authUserId);
+    public Vote saveWithVote(Vote previousVote, int authUserId, int id) {
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalTime time = localDateTime.toLocalTime();
         LocalDate date = localDateTime.toLocalDate();
         if (!time.isAfter(END_VOTE_TIME)) {
-            if (vote == null || vote.getVoteDate().isBefore(date)) {
-                voteRepository.saveAndFlush(
-                        new Vote(null, date, time, restaurantRepository.getReferenceById(id), userRepository.getReferenceById(authUserId)));
+            if (previousVote == null || previousVote.getVoteDate().isBefore(date)) {
+                return voteRepository.save(
+                        new Vote(null, date, time, restaurantRepository.getExisted(id), userRepository.getExisted(authUserId)));
             } else {
-                voteRepository.saveAndFlush(
-                        new Vote(vote.getId(), date, time, restaurantRepository.getReferenceById(id), userRepository.getReferenceById(authUserId)));
+                return voteRepository.saveAndFlush(
+                        new Vote(previousVote.getId(), date, time, restaurantRepository.getReferenceById(id), userRepository.getReferenceById(authUserId)));
             }
         }
+        return previousVote;
     }
 }
