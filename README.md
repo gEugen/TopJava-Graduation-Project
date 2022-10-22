@@ -35,5 +35,6 @@ User2:  user2@yandex.ru / password2
 User3:  user3@yandex.ru / password3
 User4:  user4@yandex.ru / password4
 User5:  user5@yandex.ru / password5
+User6:  user6@yandex.ru / password6
 Guest: guest@gmail.com / guest
 ```

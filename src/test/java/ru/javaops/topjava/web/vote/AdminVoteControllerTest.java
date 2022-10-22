@@ -20,6 +20,16 @@ public class AdminVoteControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
+    void getVote() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL + user5Vote.getId()))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(VOTE_GET_MATCHER.contentJson(user5Vote));
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
     void getVotesByRestaurant() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT5_ID + "/user-votes"))
                 .andExpect(status().isOk())
