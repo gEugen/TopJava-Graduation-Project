@@ -1,5 +1,8 @@
 Graduation work on Java Enterprise Online Project
 =================================================
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/0262b6a6f1784fde8a900b2ecb0388b8)](https://app.codacy.com/gh/gEugen/TopJavaGraduationProject?utm_source=github.com&utm_medium=referral&utm_content=gEugen/TopJavaGraduationProject&utm_campaign=Badge_Grade_Settings)
+
 -------------------------------------------------
 Design and implement a REST API using Hibernate/Spring/SpringMVC (or Spring-Boot) **without frontend**.
 
