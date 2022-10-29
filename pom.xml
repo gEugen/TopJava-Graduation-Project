@@ -8,11 +8,11 @@
         <version>2.7.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>ru.javaops</groupId>
-    <artifactId>topjava-graduation</artifactId>
+    <groupId>com.github.geugen</groupId>
+    <artifactId>voting</artifactId>
     <version>1.0</version>
-    <name>TopJava Graduation</name>
-    <description>Vote Management application (TopJava)</description>
+    <name>Voting Management System</name>
+    <description>Voting Management System application for TopJava Graduation</description>
 
     <properties>
         <java.version>17</java.version>

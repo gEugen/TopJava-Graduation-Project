@@ -1,6 +1,6 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/db15e1c8a2ab4d019a49e89fcf0296a4)](https://www.codacy.com/gh/gEugen/TopJavaGraduationProject/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gEugen/TopJavaGraduationProject&amp;utm_campaign=Badge_Grade)
 =================================================
-Graduation work on Java Enterprise Online Project
+Voting Management System for Restaurants
 =================================================
 -------------------------------------------------
 Design and implement a REST API using Hibernate/Spring/SpringMVC (or Spring-Boot) **without frontend**.
@@ -21,15 +21,11 @@ Build a voting system for deciding where to have lunch.
 Each restaurant provides a new menu each day.
 
 -------------------------------------------------
-### Initial projects
-Source code taken from [BootJava](https://javaops.ru/view/bootjava)  
-and [TopJava](https://javaops.ru/view/topjava) courses
--------------------------------------------------------------
 - Stack: [JDK 17](http://jdk.java.net/17/), Spring Boot 2.7, Lombok, H2, Caffeine Cache, Swagger/OpenAPI 3.0
 - Run: `mvn spring-boot:run` in root directory.
 -----------------------------------------------------
 [REST API documentation](http://localhost:8080/swagger-ui.html)  
-Креденшелы:
+Credentials:
 ```
 Admin: admin@gmail.com / admin
 User1:  user1@yandex.ru / password1

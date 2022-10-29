@@ -47,7 +47,7 @@ logging:
 #      hibernate:
 #        type: trace
     root: WARN
-    ru.javaops.topjava: DEBUG
+    com.github.geugen.voting: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 #  file:
 #    name: C:\IDEA_project\TopJavaGraduationProject\log\topjava.log
