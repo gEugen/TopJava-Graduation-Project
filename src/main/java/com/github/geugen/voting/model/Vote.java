@@ -41,7 +41,7 @@ public class Vote extends BaseEntity {
     @Schema(hidden = true)
     private Restaurant restaurant;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @Schema(hidden = true)
     private User user;
