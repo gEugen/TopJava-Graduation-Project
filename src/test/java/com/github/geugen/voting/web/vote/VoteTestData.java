@@ -17,11 +17,11 @@ public class VoteTestData {
 
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(
-                    Vote.class, "voteDate", "voteTime", "restaurant", "user.password", "user.registered", "user.vote");
+                    Vote.class, "voteDate", "voteTime", "restaurant", "user.password", "user.registered", "user.votes");
 
     public static final MatcherFactory.Matcher<Vote> VOTE_SAVE_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(
-                    Vote.class, "voteDate", "voteTime", "restaurant.dishes", "restaurant.vote", "user.password", "user.registered", "user.vote", "user.roles");
+                    Vote.class, "voteDate", "voteTime", "restaurant.dishes", "restaurant.votes", "user.password", "user.registered", "user.votes", "user.roles");
 
     public static final MatcherFactory.Matcher<VoteRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteRestaurantTo.class);
 

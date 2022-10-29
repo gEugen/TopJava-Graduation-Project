@@ -1,4 +1,4 @@
-INSERT INTO RESTAURANTS (NAME, EMAIL)
+INSERT INTO RESTAURANT (NAME, EMAIL)
 VALUES ('ASTORIA', 'astoria@yandex.ru'),
        ('CONTINENTAL', 'continental@yandex.ru'),
        ('PRAGUE', 'prague@gmail.com'),

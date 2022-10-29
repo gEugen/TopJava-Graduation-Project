@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER =
-            MatcherFactory.usingIgnoringFieldsComparator(User.class, "password", "registered", "roles", "vote");
+            MatcherFactory.usingIgnoringFieldsComparator(User.class, "password", "registered", "roles", "votes");
     public static final int USER1_ID = 1;
     public static final int USER2_ID = 2;
     public static final int USER3_ID = 3;

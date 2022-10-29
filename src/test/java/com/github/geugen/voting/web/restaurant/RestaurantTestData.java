@@ -14,15 +14,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RestaurantTestData {
 
-    public static final MatcherFactory.Matcher<AdminRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(AdminRestaurantTo.class);
+    public static final MatcherFactory.Matcher<AdminRestaurantTo> RESTAURANT_TO_MATCHER =
+            MatcherFactory.usingIgnoringFieldsComparator(AdminRestaurantTo.class);
 
     public static MatcherFactory.Matcher<Restaurant> RESTAURANT_UPDATE_MATCHER =
             MatcherFactory.usingAssertions(Restaurant.class,
                     //     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
                     (a, e) -> assertThat(a).usingRecursiveComparison()
                             .ignoringFields(
-                                    "vote.voteDate", "vote.voteTime", "vote.restaurant.vote", "vote.user.password",
-                                    "vote.user.registered", "vote.user.vote")
+                                    "votes.voteDate", "votes.voteTime", "votes.restaurant.votes", "votes.user.password",
+                                    "votes.user.registered", "votes.user.votes")
                             .isEqualTo(e),
                     (a, e) -> {
                         throw new UnsupportedOperationException();
@@ -84,7 +85,7 @@ public class RestaurantTestData {
         Vote updatedVote2 = new Vote(VoteTestData.adminVote);
         updatedVote1.setRestaurant(getUpdated());
         updatedVote2.setRestaurant(getUpdated());
-        updatedForCompare.setVote(List.of(updatedVote1, updatedVote2));
+        updatedForCompare.setVotes(List.of(updatedVote1, updatedVote2));
         return updatedForCompare;
     }
 

@@ -84,8 +84,8 @@ public class AdminRestaurantController {
             @Parameter(description = "id of restaurant") @PathVariable int id) {
         log.info("update {}", id);
         ValidationUtil.assureIdConsistent(restaurantTo, id);
-        Restaurant restaurant = new Restaurant(restaurantTo);
-        restaurant.setVote(restaurantRepository.getExisted(id).getVote());
+        Restaurant restaurant = new Restaurant(restaurantTo.getId(), restaurantTo.getName(), restaurantTo.getEmail());
+        restaurant.setVotes(restaurantRepository.getExisted(id).getVotes());
         restaurantRepository.save(restaurant);
     }
 
@@ -96,7 +96,7 @@ public class AdminRestaurantController {
             @Parameter(description = "created restaurant profile") @Valid @RequestBody AdminRestaurantTo restaurantTo) {
         log.info("create {}", restaurantTo);
         ValidationUtil.checkNew(restaurantTo);
-        Restaurant created = restaurantRepository.save(new Restaurant(restaurantTo));
+        Restaurant created = restaurantRepository.save(new Restaurant(restaurantTo.getId(), restaurantTo.getName(), restaurantTo.getEmail()));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();

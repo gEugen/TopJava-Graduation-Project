@@ -1,6 +1,6 @@
 package com.github.geugen.voting.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.geugen.voting.HasIdAndEmail;
 import com.github.geugen.voting.util.validation.NoHtml;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import com.github.geugen.voting.HasIdAndEmail;
-import com.github.geugen.voting.to.AdminRestaurantTo;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -20,13 +18,13 @@ import java.util.List;
 
 
 @Entity
-@Table(name = "restaurants", indexes = @Index(name = "restaurant_unique_email_idx", columnList = "email"))
+@Table(name = "restaurant", indexes = @Index(name = "restaurant_unique_email_idx", columnList = "email", unique = true))
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Restaurant extends NamedEntity implements HasIdAndEmail {
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false)
     @Email
     @NotBlank
     @Size(max = 128)
@@ -38,10 +36,9 @@ public class Restaurant extends NamedEntity implements HasIdAndEmail {
     @Schema(hidden = true)
     private List<Dish> dishes;
 
-    @OneToMany(mappedBy = "restaurant")
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
-    private List<Vote> vote;
+    private List<Vote> votes;
 
     public Restaurant(Integer id, String name, String email) {
         this.id = id;
@@ -57,11 +54,6 @@ public class Restaurant extends NamedEntity implements HasIdAndEmail {
         super(id, name);
         this.email = email;
         this.dishes = dishes;
-    }
-
-    public Restaurant(AdminRestaurantTo restaurantTo) {
-        super(restaurantTo.getId(), restaurantTo.getName());
-        this.email = restaurantTo.getEmail();
     }
 
     @Override
