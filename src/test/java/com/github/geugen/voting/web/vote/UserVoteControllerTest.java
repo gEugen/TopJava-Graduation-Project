@@ -33,13 +33,13 @@ public class UserVoteControllerTest extends AbstractControllerTest {
     private VoteRepository voteRepository;
 
     @Test
-    @WithUserDetails(value = USER2_MAIL)
+    @WithUserDetails(value = USER5_MAIL)
     void getWithVoteMark() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT3_ID + "/with-dishes-and-vote"))
+        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT5_ID + "/with-dishes-and-vote"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_TO_MATCHER.contentJson(createTo(restaurant3, VOTED)));
+                .andExpect(RESTAURANT_TO_MATCHER.contentJson(createTo(restaurant5, VOTED)));
     }
 
     @Test
