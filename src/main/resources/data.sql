@@ -32,7 +32,7 @@ VALUES (1, 1),
        (5, 6),
        (5, 7);
 
-INSERT INTO DISH (NAME, PRICE, RESTAURANT_ID)
+INSERT INTO MENU_ITEM (NAME, PRICE, RESTAURANT_ID)
 VALUES ('Escalope', 250, 1),
        ('Grilled chicken', 110, 1),
        ('Marinated squid', 50, 1),
@@ -45,6 +45,6 @@ VALUES ('Escalope', 250, 1),
        ('Coffee', 10, 5),
        ('Tea', 5, 5);
 
-INSERT INTO DISH (NAME, DATE, PRICE, RESTAURANT_ID)
+INSERT INTO MENU_ITEM (NAME, DATE, PRICE, RESTAURANT_ID)
 VALUES ('Coffee2', CURRENT_DATE - 1, 10, 5),
        ('Tea2', CURRENT_DATE - 1, 5, 5);

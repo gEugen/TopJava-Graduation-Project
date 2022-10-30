@@ -34,7 +34,7 @@ public class Restaurant extends NamedEntity implements HasIdAndEmail {
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)//, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
     @Schema(hidden = true)
-    private List<Dish> dishes;
+    private List<MenuItem> menuItems;
 
     @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -50,10 +50,10 @@ public class Restaurant extends NamedEntity implements HasIdAndEmail {
         this(r.id, r.name, r.email);
     }
 
-    public Restaurant(Integer id, String name, String email, List<Dish> dishes) {
+    public Restaurant(Integer id, String name, String email, List<MenuItem> menuItems) {
         super(id, name);
         this.email = email;
-        this.dishes = dishes;
+        this.menuItems = menuItems;
     }
 
     @Override

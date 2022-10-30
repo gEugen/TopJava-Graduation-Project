@@ -1,7 +1,7 @@
 package com.github.geugen.voting.to;
 
 import com.github.geugen.voting.HasIdAndEmail;
-import com.github.geugen.voting.model.Dish;
+import com.github.geugen.voting.model.MenuItem;
 import com.github.geugen.voting.util.validation.NoHtml;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -21,14 +21,14 @@ public class VoteRestaurantTo extends NamedTo implements HasIdAndEmail {
     @NoHtml  // https://stackoverflow.com/questions/17480809
     String email;
 
-    List<Dish> dishes;
+    List<MenuItem> menuItems;
 
     boolean voteMark;
 
-    public VoteRestaurantTo(Integer id, String name, String email, List<Dish> dishes, boolean voteMark) {
+    public VoteRestaurantTo(Integer id, String name, String email, List<MenuItem> menuItems, boolean voteMark) {
         super(id, name);
         this.email = email;
-        this.dishes = dishes;
+        this.menuItems = menuItems;
         this.voteMark = voteMark;
     }
 

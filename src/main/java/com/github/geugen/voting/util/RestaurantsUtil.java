@@ -13,7 +13,7 @@ public class RestaurantsUtil {
     public static VoteRestaurantTo createTo(Restaurant restaurant, boolean vote) {
         return new VoteRestaurantTo(
                 restaurant.getId(), restaurant.getName(), restaurant.getEmail(),
-                Optional.ofNullable(restaurant.getDishes()).orElse(new ArrayList<>()),
+                Optional.ofNullable(restaurant.getMenuItems()).orElse(new ArrayList<>()),
                 vote);
     }
 

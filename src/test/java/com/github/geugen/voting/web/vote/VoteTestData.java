@@ -13,7 +13,7 @@ import static com.github.geugen.voting.web.user.UserTestData.*;
 public class VoteTestData {
     public static final MatcherFactory.Matcher<Vote> VOTE_GET_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(
-                    Vote.class, "voteDate", "voteTime", "restaurant.vote", "restaurant.dishes", "user.password", "user.registered");
+                    Vote.class, "voteDate", "voteTime", "restaurant.vote", "restaurant.menuItems", "user.password", "user.registered");
 
     public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(
@@ -21,9 +21,9 @@ public class VoteTestData {
 
     public static final MatcherFactory.Matcher<Vote> VOTE_SAVE_MATCHER =
             MatcherFactory.usingIgnoringFieldsComparator(
-                    Vote.class, "voteDate", "voteTime", "restaurant.dishes", "restaurant.votes", "user.password", "user.registered", "user.votes", "user.roles");
+                    Vote.class, "voteDate", "voteTime", "restaurant.menuItems", "restaurant.votes", "user.password", "user.registered", "user.votes", "user.roles");
 
-    public static final MatcherFactory.Matcher<VoteRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteRestaurantTo.class, "dishes");
+    public static final MatcherFactory.Matcher<VoteRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteRestaurantTo.class, "menuItems");
 
     public static final int VOTE1_ID = 1;
     public static final int VOTE2_ID = 2;

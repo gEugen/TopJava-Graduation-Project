@@ -4,7 +4,7 @@ import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.to.AdminRestaurantTo;
 import com.github.geugen.voting.web.MatcherFactory;
-import com.github.geugen.voting.web.dish.DishTestData;
+import com.github.geugen.voting.web.menu.MenuItemTestData;
 import com.github.geugen.voting.web.vote.VoteTestData;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class RestaurantTestData {
             MatcherFactory.usingAssertions(Restaurant.class,
                     //     No need use ignoringAllOverriddenEquals, see https://assertj.github.io/doc/#breaking-changes
                     (a, e) -> assertThat(a).usingRecursiveComparison()
-                            .ignoringFields("dishes", "users").isEqualTo(e),
+                            .ignoringFields("menuItems", "users").isEqualTo(e),
                     (a, e) -> {
                         throw new UnsupportedOperationException();
                     });
@@ -66,10 +66,10 @@ public class RestaurantTestData {
     static {
         restaurants = getListOfRestaurants();
         restaurantsWithUserVotes = getListOfRestaurants();
-        restaurant1.setDishes(List.of(DishTestData.dish1, DishTestData.dish2, DishTestData.dish3));
-        restaurant2.setDishes(List.of(DishTestData.dish4, DishTestData.dish5, DishTestData.dish6));
-        restaurant3.setDishes(List.of(DishTestData.dish7, DishTestData.dish8, DishTestData.dish9));
-        restaurant5.setDishes(List.of(DishTestData.dish10, DishTestData.dish11));
+        restaurant1.setMenuItems(List.of(MenuItemTestData.MENU_ITEM_1, MenuItemTestData.MENU_ITEM_2, MenuItemTestData.MENU_ITEM_3));
+        restaurant2.setMenuItems(List.of(MenuItemTestData.MENU_ITEM_4, MenuItemTestData.MENU_ITEM_5, MenuItemTestData.MENU_ITEM_6));
+        restaurant3.setMenuItems(List.of(MenuItemTestData.MENU_ITEM_7, MenuItemTestData.MENU_ITEM_8, MenuItemTestData.MENU_ITEM_9));
+        restaurant5.setMenuItems(List.of(MenuItemTestData.MENU_ITEM_10, MenuItemTestData.MENU_ITEM_11));
     }
 
     public static Restaurant getUpdated() {
