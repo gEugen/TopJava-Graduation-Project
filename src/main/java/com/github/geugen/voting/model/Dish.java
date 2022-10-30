@@ -1,34 +1,43 @@
 package com.github.geugen.voting.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import java.time.LocalDate;
 
 
 @Entity
-@Table(name = "dishes", uniqueConstraints = @UniqueConstraint(columnNames = {"restaurant_id", "name"}, name = "uk_restaurant_name"))
+@Table(
+        name = "dish", uniqueConstraints = @UniqueConstraint(columnNames = {"restaurant_id", "name"}, name = "uk_restaurant_name"),
+        indexes = {
+                @Index(name = "restaurant_date_idx", columnList = "restaurant_id, date"),
+                @Index(name = "dish_restaurant_idx", columnList = "id, restaurant_id")
+        })
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true, exclude = {"restaurant"})
 public class Dish extends NamedEntity {
 
-    @Column(name = "price", nullable = false)
+    @Column(name = "date", nullable = false, columnDefinition = "date default current_date", updatable = false)
     @NotNull
-    @Positive
-    @Range(min = 0, max = 5000)
-    private double price;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private LocalDate date = LocalDate.now();
+
+    @Column(name = "price")
+    @Range(min = 1)
+    private long price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @JsonIgnore
     private Restaurant restaurant;
 
-    public Dish(Integer id, String name, double price) {
+    public Dish(Integer id, String name, long price) {
         super(id, name);
         this.price = price;
     }

@@ -133,7 +133,7 @@ class DishControllerTest extends AbstractControllerTest {
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
     void updateDuplicate() {
-        Dish invalid = new Dish(DishTestData.DISH5_ID, "Scrambled eggs", 0.9);
+        Dish invalid = new Dish(DishTestData.DISH5_ID, "Scrambled eggs", 90);
         assertThrows(Exception.class, () ->
                 perform(MockMvcRequestBuilders.put(REST_URL + DishTestData.DISH5_ID, RESTAURANT2_ID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -146,7 +146,7 @@ class DishControllerTest extends AbstractControllerTest {
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
     void createDuplicate() {
-        Dish invalid = new Dish(null, "Scrambled eggs", 0.9);
+        Dish invalid = new Dish(null, "Scrambled eggs", 90);
         assertThrows(Exception.class, () ->
                 perform(MockMvcRequestBuilders.post(REST_URL, RESTAURANT2_ID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -155,32 +155,4 @@ class DishControllerTest extends AbstractControllerTest {
                         .andExpect(status().isUnprocessableEntity())
         );
     }
-//
-//    @Test
-//    @WithUserDetails(value = USER_MAIL)
-//    void get() throws Exception {
-//        perform(MockMvcRequestBuilders.get(REST_URL + MEAL1_ID))
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-//                .andExpect(MEAL_MATCHER.contentJson(meal1));
-//    }
-//
-//    @Test
-//    @WithUserDetails(value = USER_MAIL)
-//    void getNotFound() throws Exception {
-//        perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_MEAL_ID))
-//                .andDo(print())
-//                .andExpect(status().isNotFound());
-//    }
-//
-//    @Test
-//    @WithUserDetails(value = USER_MAIL)
-//    void getAll() throws Exception {
-//        perform(MockMvcRequestBuilders.get(REST_URL))
-//                .andExpect(status().isOk())
-//                .andDo(print())
-//                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-//                .andExpect(MEAL_TO_MATCHER.contentJson(getTos(meals, UserTestData.user.getCaloriesPerDay())));
-//    }
 }

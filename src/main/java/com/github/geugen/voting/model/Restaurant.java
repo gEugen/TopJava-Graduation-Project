@@ -31,7 +31,7 @@ public class Restaurant extends NamedEntity implements HasIdAndEmail {
     @NoHtml   // https://stackoverflow.com/questions/17480809
     private String email;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")//, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "restaurant", fetch = FetchType.LAZY)//, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE) //https://stackoverflow.com/a/44988100/548473
     @Schema(hidden = true)
     private List<Dish> dishes;

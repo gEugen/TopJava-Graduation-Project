@@ -20,6 +20,7 @@ import com.github.geugen.voting.service.DishService;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -40,10 +41,10 @@ public class DishController {
     @Operation(summary = "Get dish list for restaurant by its id", description = "Returns dish list")
     @GetMapping()
     @Cacheable
-    public List<Dish> getAllForRestaurant(@Parameter(description = "id of restaurant") @PathVariable int restaurantId) {
+    public List<Dish> getAllByRestaurantForCurrentDay(@Parameter(description = "id of restaurant") @PathVariable int restaurantId) {
         log.info("get {}", restaurantId);
         restaurantRepository.getExisted(restaurantId);
-        return dishRepository.getAll(restaurantId);
+        return dishRepository.getAll(restaurantId, LocalDate.now());
     }
 
     @Operation(summary = "Get dish for restaurant by its ides", description = "Returns response with dish")

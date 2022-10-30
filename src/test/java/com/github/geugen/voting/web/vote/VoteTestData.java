@@ -23,7 +23,7 @@ public class VoteTestData {
             MatcherFactory.usingIgnoringFieldsComparator(
                     Vote.class, "voteDate", "voteTime", "restaurant.dishes", "restaurant.votes", "user.password", "user.registered", "user.votes", "user.roles");
 
-    public static final MatcherFactory.Matcher<VoteRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteRestaurantTo.class);
+    public static final MatcherFactory.Matcher<VoteRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteRestaurantTo.class, "dishes");
 
     public static final int VOTE1_ID = 1;
     public static final int VOTE2_ID = 2;

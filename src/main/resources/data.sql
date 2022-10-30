@@ -32,15 +32,19 @@ VALUES (1, 1),
        (5, 6),
        (5, 7);
 
-INSERT INTO DISHES (NAME, PRICE, RESTAURANT_ID)
-VALUES ('Escalope', 2.5, 1),
-       ('Grilled chicken', 1.1, 1),
-       ('Marinated squid', 0.5, 1),
-       ('Scrambled eggs', 0.9, 2),
-       ('Vegetable stew', 1.05, 2),
-       ('Italian pasta', 0.6, 2),
-       ('Sponge cake', 3.1, 3),
-       ('Coconut ice cream', 2.1, 3),
-       ('Coffee with milk', 0.25, 3),
-       ('Coffee', 0.1, 5),
-       ('Tea', 0.05, 5);
+INSERT INTO DISH (NAME, PRICE, RESTAURANT_ID)
+VALUES ('Escalope', 250, 1),
+       ('Grilled chicken', 110, 1),
+       ('Marinated squid', 50, 1),
+       ('Scrambled eggs', 90, 2),
+       ('Vegetable stew', 105, 2),
+       ('Italian pasta', 60, 2),
+       ('Sponge cake', 310, 3),
+       ('Coconut ice cream', 210, 3),
+       ('Coffee with milk', 25, 3),
+       ('Coffee', 10, 5),
+       ('Tea', 5, 5);
+
+INSERT INTO DISH (NAME, DATE, PRICE, RESTAURANT_ID)
+VALUES ('Coffee2', CURRENT_DATE - 1, 10, 5),
+       ('Tea2', CURRENT_DATE - 1, 5, 5);

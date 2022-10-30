@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.geugen.voting.error.DataConflictException;
 import com.github.geugen.voting.model.Dish;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +13,8 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface DishRepository extends BaseRepository<Dish> {
 
-    @Query("SELECT d FROM Dish d WHERE d.restaurant.id=:restaurantId")
-    List<Dish> getAll(int restaurantId);
+    @Query("SELECT d FROM Dish d WHERE d.restaurant.id=:restaurantId and d.date=:date")
+    List<Dish> getAll(int restaurantId, LocalDate date);
 
     @Query("SELECT d FROM Dish d WHERE d.id = :id and d.restaurant.id = :restaurantId")
     Optional<Dish> get(int id, int restaurantId);
