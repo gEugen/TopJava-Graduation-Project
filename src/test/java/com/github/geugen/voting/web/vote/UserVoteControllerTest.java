@@ -1,28 +1,27 @@
 package com.github.geugen.voting.web.vote;
 
+import com.github.geugen.voting.model.Vote;
+import com.github.geugen.voting.repository.VoteRepository;
+import com.github.geugen.voting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.github.geugen.voting.model.Vote;
-import com.github.geugen.voting.repository.VoteRepository;
-import com.github.geugen.voting.web.AbstractControllerTest;
 
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static com.github.geugen.voting.model.Vote.END_VOTE_TIME;
-import static com.github.geugen.voting.util.DateTimeUtil.TIME_FORMATTER;
+import static com.github.geugen.voting.service.VoteService.setEndVoteChangeTime;
 import static com.github.geugen.voting.util.RestaurantsUtil.createTo;
 import static com.github.geugen.voting.util.RestaurantsUtil.createTos;
 import static com.github.geugen.voting.web.restaurant.RestaurantTestData.*;
 import static com.github.geugen.voting.web.user.UserTestData.*;
 import static com.github.geugen.voting.web.vote.VoteTestData.RESTAURANT_TO_MATCHER;
 import static com.github.geugen.voting.web.vote.VoteTestData.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 public class UserVoteControllerTest extends AbstractControllerTest {
@@ -60,7 +59,7 @@ public class UserVoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER6_MAIL)
     void validVoteWithCreation() throws Exception {
-        END_VOTE_TIME = LocalTime.parse(LocalTime.MAX.format(TIME_FORMATTER));
+        setEndVoteChangeTime(LocalTime.MAX);
         perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT2_ID))
                 .andDo(print())
                 .andExpect(status().isCreated());
@@ -71,7 +70,7 @@ public class UserVoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER3_MAIL)
     void validVoteWithUpdating() throws Exception {
-        END_VOTE_TIME = LocalTime.parse(LocalTime.MAX.format(TIME_FORMATTER));
+        setEndVoteChangeTime(LocalTime.MAX);
         perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT1_ID))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -85,7 +84,7 @@ public class UserVoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER3_MAIL)
     void nonValidVoteAfterTimeIsOver() throws Exception {
-        END_VOTE_TIME = LocalTime.parse(LocalTime.MIN.format(TIME_FORMATTER));
+        setEndVoteChangeTime(LocalTime.MIN);
         perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT1_ID))
                 .andDo(print())
                 .andExpect(status().isForbidden());

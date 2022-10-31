@@ -12,10 +12,9 @@ import java.time.LocalDate;
 
 @Entity
 @Table(
-        name = "menu_item", uniqueConstraints = @UniqueConstraint(columnNames = {"restaurant_id", "name"}, name =
-        "uk_restaurant_name"),
+        name = "menu_item", uniqueConstraints = @UniqueConstraint(columnNames = {"restaurant_id", "name"}, name = "uk_restaurant_name"),
         indexes = {
-                @Index(name = "restaurant_date_idx", columnList = "restaurant_id, date"),
+                @Index(name = "restaurant_registered_idx", columnList = "restaurant_id, registered"),
                 @Index(name = "dish_restaurant_idx", columnList = "id, restaurant_id")
         })
 @Getter
@@ -24,10 +23,10 @@ import java.time.LocalDate;
 @ToString(callSuper = true, exclude = {"restaurant"})
 public class MenuItem extends NamedEntity {
 
-    @Column(name = "date", nullable = false, columnDefinition = "date default current_date", updatable = false)
+    @Column(name = "registered", nullable = false, columnDefinition = "date default current_date", updatable = false)
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private LocalDate date = LocalDate.now();
+    private LocalDate registered = LocalDate.now();
 
     @Column(name = "price")
     @Range(min = 1)

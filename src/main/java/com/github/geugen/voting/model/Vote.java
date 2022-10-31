@@ -1,12 +1,11 @@
 package com.github.geugen.voting.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
-import com.github.geugen.voting.util.DateTimeUtil;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,33 +15,34 @@ import java.time.LocalTime;
 
 @Entity
 @Table(
-        name = "vote", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "date"}, name = "uk_user_date"),
-        indexes = @Index(name = "vote_unique_user_restaurant_idx", columnList = "user_id, restaurant_id"))
+        name = "vote", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "vote_date"}, name = "uk_user_vote_date"),
+        indexes = @Index(name = "restaurant_idx", columnList = "restaurant_id"))
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Vote extends BaseEntity {
 
-    public static LocalTime END_VOTE_TIME = LocalTime.parse("11:00");
-
-    @Column(name = "date", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE")
+    @Column(name = "vote_date", nullable = false, columnDefinition = "date default current_date", updatable = false)
     @NotNull
-    @DateTimeFormat(pattern = DateTimeUtil.DATE_PATTERN)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Schema(pattern = "YYYY-MM-DD")
     private LocalDate voteDate;
 
-    @Column(name = "time", nullable = false, columnDefinition = "TIME DEFAULT CURRENT_TIME")
+    @Column(name = "vote_time", nullable = false, columnDefinition = "time default current_time")
     @NotNull
-    @DateTimeFormat(pattern = DateTimeUtil.TIME_PATTERN)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(type = "date-time", pattern = "HH:mm:ss")
     private LocalTime voteTime;
 
     @ManyToOne
-    @JoinColumn(name = "restaurant_id")
+    @NotNull
+    @JoinColumn(name = "restaurant_id", nullable = false)
     @Schema(hidden = true)
     private Restaurant restaurant;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @NotNull
+    @JoinColumn(name = "user_id", nullable = false)
     @Schema(hidden = true)
     private User user;
 
@@ -66,6 +66,6 @@ public class Vote extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Vote:" + id + "[Restaurant: " + restaurant.id + ", User: " + user.id + ']';
+        return "Vote:" + id + "[Restaurant: " + restaurant.getId() + ", User: " + user.getId() + ']';
     }
 }
