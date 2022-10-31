@@ -1,9 +1,12 @@
-INSERT INTO RESTAURANT (NAME, EMAIL)
-VALUES ('ASTORIA', 'astoria@yandex.ru'),
-       ('CONTINENTAL', 'continental@yandex.ru'),
-       ('PRAGUE', 'prague@gmail.com'),
-       ('SUSHI BAR', 'sushibar@gmail.com'),
-       ('NIAM-NIAM', 'niam-niam@gmail.com');
+INSERT INTO ADDRESS (CITY, STREET, BUILDING_NUMBER)
+VALUES ('CITY', 'STREET', 100);
+
+INSERT INTO RESTAURANT (NAME, ADDRESS_ID)
+VALUES ('ASTORIA', 1),
+       ('CONTINENTAL', 1),
+       ('PRAGUE', 1),
+       ('SUSHI BAR', 1),
+       ('NIAM-NIAM', 1);
 
 INSERT INTO USERS (NAME, EMAIL, PASSWORD)
 VALUES ('User1', 'user1@yandex.ru', '{noop}password1'),

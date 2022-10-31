@@ -1,11 +1,11 @@
 package com.github.geugen.voting.repository;
 
+import com.github.geugen.voting.model.Address;
 import com.github.geugen.voting.model.Restaurant;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Transactional(readOnly = true)
@@ -18,9 +18,8 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
 
     @Query(
             "SELECT DISTINCT r FROM Restaurant r LEFT JOIN FETCH r.menuItems mi " +
-                    "WHERE SIZE(r.menuItems) = 0 OR mi.registered = current_date ORDER BY r.name ASC, r.email ASC")
+                    "WHERE SIZE(r.menuItems) = 0 OR mi.registered = current_date ORDER BY r.name ASC")
     List<Restaurant> getAllWithDishes();
 
-    @Query("SELECT r FROM Restaurant r WHERE r.email = LOWER(:email)")
-    Optional<Restaurant> findByEmailIgnoreCase(String email);
+    Restaurant getRestaurantByNameAndAddress(String name, Address address);
 }

@@ -12,24 +12,24 @@ public class RestaurantsUtil {
 
     public static VoteRestaurantTo createTo(Restaurant restaurant, boolean vote) {
         return new VoteRestaurantTo(
-                restaurant.getId(), restaurant.getName(), restaurant.getEmail(),
+                restaurant.getId(), restaurant.getName(), restaurant.getAddress(),
                 Optional.ofNullable(restaurant.getMenuItems()).orElse(new ArrayList<>()),
                 vote);
     }
 
     public static List<VoteRestaurantTo> createTos(VoteRestaurantTo... voteRestaurantTos) {
         return Arrays.stream(voteRestaurantTos)
-                .sorted(Comparator.comparing(VoteRestaurantTo::getName).thenComparing(VoteRestaurantTo::getEmail))
+                .sorted(Comparator.comparing(VoteRestaurantTo::getName))
                 .collect(Collectors.toList());
     }
 
     public static List<AdminRestaurantTo> createTos(List<Restaurant> restaurants) {
         return restaurants.stream().map(AdminRestaurantTo::new)
-                .sorted(Comparator.comparing(AdminRestaurantTo::getName).thenComparing(AdminRestaurantTo::getEmail))
+                .sorted(Comparator.comparing(AdminRestaurantTo::getName))
                 .collect(Collectors.toList());
     }
 
     public static AdminRestaurantTo createTo(Restaurant restaurant) {
-        return new AdminRestaurantTo(restaurant.getId(), restaurant.getName(), restaurant.getEmail());
+        return new AdminRestaurantTo(restaurant.getId(), restaurant.getName(), restaurant.getAddress());
     }
 }

@@ -1,5 +1,6 @@
 package com.github.geugen.voting.web.restaurant;
 
+import com.github.geugen.voting.model.Address;
 import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.to.AdminRestaurantTo;
@@ -15,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RestaurantTestData {
 
     public static final MatcherFactory.Matcher<AdminRestaurantTo> RESTAURANT_TO_MATCHER =
-            MatcherFactory.usingIgnoringFieldsComparator(AdminRestaurantTo.class);
+            MatcherFactory.usingIgnoringFieldsComparator(AdminRestaurantTo.class, "address.id");
 
     public static MatcherFactory.Matcher<Restaurant> RESTAURANT_UPDATE_MATCHER =
             MatcherFactory.usingAssertions(Restaurant.class,
@@ -23,7 +24,7 @@ public class RestaurantTestData {
                     (a, e) -> assertThat(a).usingRecursiveComparison()
                             .ignoringFields(
                                     "votes.voteDate", "votes.voteTime", "votes.restaurant.votes", "votes.user.password",
-                                    "votes.user.registered", "votes.user.votes")
+                                    "votes.user.registered", "votes.user.votes", "votes.restaurant.address.id", "address.id", "menuItems")
                             .isEqualTo(e),
                     (a, e) -> {
                         throw new UnsupportedOperationException();
@@ -48,17 +49,13 @@ public class RestaurantTestData {
     public static final int RESTAURANT5_ID = 5;
     public static final int NOT_FOUND = 200;
 
-    public static final String RESTAURANT1_MAIL = "astoria@yandex.ru";
-    public static final String RESTAURANT2_MAIL = "continental@yandex.ru";
-    public static final String RESTAURANT3_MAIL = "prague@gmail.com";
-    public static final String RESTAURANT4_MAIL = "sushibar@gmail.com";
-    public static final String RESTAURANT5_MAIL = "niam-niam@gmail.com";
+    public static final Address address = new Address(1, "CITY", "STREET", 100);
 
-    public static final Restaurant restaurant1 = new Restaurant(RESTAURANT1_ID, "ASTORIA", RESTAURANT1_MAIL);
-    public static final Restaurant restaurant2 = new Restaurant(RESTAURANT2_ID, "CONTINENTAL", RESTAURANT2_MAIL);
-    public static final Restaurant restaurant3 = new Restaurant(RESTAURANT3_ID, "PRAGUE", RESTAURANT3_MAIL);
-    public static final Restaurant restaurant4 = new Restaurant(RESTAURANT4_ID, "SUSHI BAR", RESTAURANT4_MAIL);
-    public static final Restaurant restaurant5 = new Restaurant(RESTAURANT5_ID, "NIAM-NIAM", RESTAURANT5_MAIL);
+    public static final Restaurant restaurant1 = new Restaurant(RESTAURANT1_ID, "ASTORIA", address);
+    public static final Restaurant restaurant2 = new Restaurant(RESTAURANT2_ID, "CONTINENTAL", address);
+    public static final Restaurant restaurant3 = new Restaurant(RESTAURANT3_ID, "PRAGUE", address);
+    public static final Restaurant restaurant4 = new Restaurant(RESTAURANT4_ID, "SUSHI BAR", address);
+    public static final Restaurant restaurant5 = new Restaurant(RESTAURANT5_ID, "NIAM-NIAM", address);
 
     public static final List<Restaurant> restaurants;
     public static final List<Restaurant> restaurantsWithUserVotes;
@@ -75,7 +72,7 @@ public class RestaurantTestData {
     public static Restaurant getUpdated() {
         Restaurant updatedRestaurant = new Restaurant(restaurant1);
         updatedRestaurant.setName("ASTORIA_NEW");
-        updatedRestaurant.setEmail("astoria_new@yandex.ru");
+        updatedRestaurant.setAddress(new Address(null, "TULA", "LENINA", 25));
         return updatedRestaurant;
     }
 
@@ -90,7 +87,7 @@ public class RestaurantTestData {
     }
 
     public static AdminRestaurantTo getNew() {
-        return new AdminRestaurantTo(null, "NEW_RESTAURANT", "new_restaurant@mail.ru");
+        return new AdminRestaurantTo(null, "NEW_RESTAURANT", new Address(null, "TULA", "LENINA", 25));
     }
 
     public static List<Restaurant> getListOfRestaurants() {
