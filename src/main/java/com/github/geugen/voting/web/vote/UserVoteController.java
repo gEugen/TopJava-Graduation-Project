@@ -1,5 +1,11 @@
 package com.github.geugen.voting.web.vote;
 
+import com.github.geugen.voting.model.Vote;
+import com.github.geugen.voting.repository.VoteRepository;
+import com.github.geugen.voting.service.VoteService;
+import com.github.geugen.voting.to.VoteTo;
+import com.github.geugen.voting.util.VoteUtils;
+import com.github.geugen.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,25 +16,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.github.geugen.voting.model.Restaurant;
-import com.github.geugen.voting.model.Vote;
-import com.github.geugen.voting.repository.RestaurantRepository;
-import com.github.geugen.voting.repository.VoteRepository;
-import com.github.geugen.voting.service.VoteService;
-import com.github.geugen.voting.to.VoteRestaurantTo;
-import com.github.geugen.voting.to.VoteTo;
-import com.github.geugen.voting.util.VoteUtils;
-import com.github.geugen.voting.web.AuthUser;
 
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.github.geugen.voting.util.RestaurantsUtil.createTo;
 
 
 @RestController
@@ -45,53 +41,6 @@ public class UserVoteController {
     private final VoteService voteService;
 
     private final VoteRepository voteRepository;
-
-    private final RestaurantRepository restaurantRepository;
-
-    @Operation(summary = "Get restaurant with vote mark by user", description = "Returns restaurant with vote mark")
-    @GetMapping("/{id}/with-dishes-and-vote")
-    public VoteRestaurantTo getWithVoteMark(
-            @AuthenticationPrincipal AuthUser authUser, @Parameter(description = "id of restaurant") @PathVariable int id) {
-        int authUserId = authUser.id();
-        log.info("getWithVoteMark restaurant {} for user {}", id, authUserId);
-        Restaurant restaurant = restaurantRepository.getWithDishes(id);
-        Vote vote = voteRepository.getVote(authUserId);
-        Integer votedRestaurantId = null;
-        if (vote != null) {
-            votedRestaurantId = vote.getRestaurant().getId();
-        }
-        VoteRestaurantTo voteRestaurantTo;
-        if (votedRestaurantId != null && votedRestaurantId == id) {
-            voteRestaurantTo = createTo(restaurant, VOTED);
-        } else {
-            voteRestaurantTo = createTo(restaurant, NOT_VOTED);
-        }
-        return voteRestaurantTo;
-    }
-
-    @Operation(
-            summary = "Get restaurant list with vote marks for each one by user",
-            description = "Returns restaurant list with vote marks")
-    @GetMapping()
-    public List<VoteRestaurantTo> getAllWithVoteMark(@AuthenticationPrincipal AuthUser authUser) {
-        int authUserId = authUser.id();
-        log.info("getAllWithVoteMark for user {}", authUserId);
-        List<Restaurant> restaurants = restaurantRepository.getAllWithDishes();
-        Vote vote = voteRepository.getVote(authUserId);
-        Integer votedRestaurantId = null;
-        if (vote != null) {
-            votedRestaurantId = vote.getRestaurant().getId();
-        }
-        List<VoteRestaurantTo> voteRestaurantToList = new ArrayList<>();
-        for (Restaurant restaurant : restaurants) {
-            if (votedRestaurantId != null && votedRestaurantId.equals(restaurant.getId())) {
-                voteRestaurantToList.add(createTo(restaurant, VOTED));
-            } else {
-                voteRestaurantToList.add(createTo(restaurant, NOT_VOTED));
-            }
-        }
-        return voteRestaurantToList;
-    }
 
     @Operation(summary = "Vote for restaurant selected by user", description = "Marks restaurant as voted one selected by user")
     @ApiResponses(value = {

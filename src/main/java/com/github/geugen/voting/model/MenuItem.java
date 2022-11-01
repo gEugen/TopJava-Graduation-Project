@@ -23,14 +23,14 @@ import java.time.LocalDate;
 @ToString(callSuper = true, exclude = {"restaurant"})
 public class MenuItem extends NamedEntity {
 
+    @Column(name = "price")
+    @Range(min = 1)
+    private long price;
+
     @Column(name = "registered", nullable = false, columnDefinition = "date default current_date", updatable = false)
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDate registered = LocalDate.now();
-
-    @Column(name = "price")
-    @Range(min = 1)
-    private long price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)

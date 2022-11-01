@@ -1,10 +1,11 @@
 package com.github.geugen.voting.util.validation;
 
+
+import com.github.geugen.voting.HasId;
+import com.github.geugen.voting.error.IllegalRequestDataException;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
-import com.github.geugen.voting.HasId;
-import com.github.geugen.voting.error.IllegalRequestDataException;
 
 
 @UtilityClass
@@ -34,6 +35,14 @@ public class ValidationUtil {
     public static <T> T checkExisted(T obj, int id) {
         if (obj == null) {
             throw new IllegalRequestDataException("Entity with id=" + id + " not found");
+        }
+        return obj;
+    }
+
+    public static <T> T checkExisted(T obj, String city, String street, int buildingNumber) {
+        if (obj == null) {
+            throw new IllegalRequestDataException(
+                    "Entity with address=[" + city + ", " + street + ", " + buildingNumber + "] not found");
         }
         return obj;
     }

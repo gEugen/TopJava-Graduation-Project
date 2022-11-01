@@ -1,8 +1,7 @@
 package com.github.geugen.voting.web.restaurant;
 
-import com.github.geugen.voting.model.Address;
+
 import com.github.geugen.voting.model.Restaurant;
-import com.github.geugen.voting.repository.AddressRepository;
 import com.github.geugen.voting.repository.RestaurantRepository;
 import com.github.geugen.voting.to.AdminRestaurantTo;
 import com.github.geugen.voting.util.validation.ValidationUtil;
@@ -39,8 +38,6 @@ public class AdminRestaurantController {
 
     private final RestaurantRepository restaurantRepository;
 
-    private final AddressRepository addressRepository;
-
     @Operation(summary = "Get restaurant profile list", description = "Returns restaurant profile list")
     @GetMapping()
     @Cacheable
@@ -49,23 +46,22 @@ public class AdminRestaurantController {
         return createTos(restaurantRepository.findAll());
     }
 
-    @Operation(summary = "Get restaurant profile by its id", description = "Returns response with found restaurant profile")
+    @Operation(summary = "Get restaurant profile by its id", description = "Returns found restaurant profile")
     @GetMapping("/{id}")
     public AdminRestaurantTo get(@Parameter(description = "id of restaurant") @PathVariable int id) {
         log.info("get {}", id);
         return new AdminRestaurantTo(restaurantRepository.getExisted(id));
     }
 
-    @Operation(summary = "Get restaurant profile by name and address", description = "Returns response with found restaurant profile")
+    @Operation(summary = "Get restaurant profile by name and address", description = "Returns found restaurant profile")
     @GetMapping("/by-name-and-address")
     public AdminRestaurantTo get(
             @Parameter(description = "restaurant name") @RequestParam @NotBlank String name,
             @Parameter(description = "city name") @RequestParam @NotBlank String city,
             @Parameter(description = "street") @RequestParam @NotBlank String street,
             @Parameter(description = "building number") @RequestParam @NotNull Integer number) {
-        Address address = addressRepository.getAddressByCityAndStreetAndBuildingNumber(city, street, number);
-        Restaurant restaurant = restaurantRepository.getRestaurantByNameAndAddress(name, address);
-        log.info("get {} {}", name, address.toString());
+        Restaurant restaurant = restaurantRepository.getExistedByNameAndAddress(name, city, street, number);
+        log.info("get {} with [{}, {}, {}]", name, city, street, number);
         return new AdminRestaurantTo(restaurant);
     }
 
