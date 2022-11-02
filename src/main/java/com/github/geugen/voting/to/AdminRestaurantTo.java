@@ -1,12 +1,14 @@
 package com.github.geugen.voting.to;
 
 import com.github.geugen.voting.model.Address;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import javax.validation.constraints.NotNull;
 
 
+@Schema(title = "AdminRestaurantTo - DTO used by Admin Restaurant Controller")
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class AdminRestaurantTo extends NamedTo {

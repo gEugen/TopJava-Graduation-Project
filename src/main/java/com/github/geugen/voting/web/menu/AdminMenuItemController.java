@@ -7,6 +7,7 @@ import com.github.geugen.voting.service.MenuItemService;
 import com.github.geugen.voting.util.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -26,6 +27,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 
+@Tag(
+        name = "Admin Menu Item Controller",
+        description = "allows administrator to get menu item list or " +
+                "specific item of specific restaurant, create, update and delete them")
 @RestController
 @RequestMapping(value = AdminMenuItemController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j

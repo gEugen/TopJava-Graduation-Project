@@ -1,8 +1,10 @@
 package com.github.geugen.voting.web.user;
 
+import com.github.geugen.voting.model.User;
 import com.github.geugen.voting.util.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -14,13 +16,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.github.geugen.voting.model.User;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
 
+@Tag(
+        name = "Admin User Controller",
+        description = "allows administrator to get user profile list or " +
+                "specific user profile by id or e-mail, create, update, delete, activate them")
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -31,7 +36,7 @@ public class AdminUserController extends AbstractUserController {
 
     @Operation(summary = "Get user profile by its id", description = "Returns response with user profile")
     @GetMapping("/{id}")
-    public ResponseEntity<User> get(@Parameter(description = "id of user") @PathVariable int id) {
+    public ResponseEntity<User> get(@Parameter(description = "user id") @PathVariable int id) {
         log.info("get {}", id);
         return ResponseEntity.of(userRepository.findById(id));
     }
@@ -40,7 +45,7 @@ public class AdminUserController extends AbstractUserController {
     @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@Parameter(description = "id of user profile") @PathVariable int id) {
+    public void delete(@Parameter(description = "user id") @PathVariable int id) {
         super.delete(id);
     }
 
@@ -55,7 +60,7 @@ public class AdminUserController extends AbstractUserController {
     @Operation(summary = "Create new user profile", description = "Creates new user profile and returns response with new user profile")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(allEntries = true)
-    public ResponseEntity<User> createWithLocation(@Parameter(description = "created new user profile") @Valid @RequestBody User user) {
+    public ResponseEntity<User> createWithLocation(@Parameter(description = "user profile") @Valid @RequestBody User user) {
         log.info("create {}", user);
         ValidationUtil.checkNew(user);
         User created = prepareAndSave(user);
@@ -71,7 +76,7 @@ public class AdminUserController extends AbstractUserController {
     @CacheEvict(allEntries = true)
     public void update(
             @Parameter(description = "updated user profile") @Valid @RequestBody User user,
-            @Parameter(description = "id of user") @PathVariable int id) {
+            @Parameter(description = "user id") @PathVariable int id) {
         log.info("update {} with id={}", user, id);
         ValidationUtil.assureIdConsistent(user, id);
         prepareAndSave(user);

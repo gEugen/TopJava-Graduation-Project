@@ -1,8 +1,13 @@
 package com.github.geugen.voting.web.user;
 
+import com.github.geugen.voting.model.User;
+import com.github.geugen.voting.to.UserTo;
+import com.github.geugen.voting.util.UserUtil;
 import com.github.geugen.voting.util.validation.ValidationUtil;
+import com.github.geugen.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -13,15 +18,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import com.github.geugen.voting.model.User;
-import com.github.geugen.voting.to.UserTo;
-import com.github.geugen.voting.util.UserUtil;
-import com.github.geugen.voting.web.AuthUser;
 
 import javax.validation.Valid;
 import java.net.URI;
 
 
+@Tag(
+        name = "Profile Controller",
+        description = "allows user to register, get, update, delete own profile")
 @RestController
 @RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -46,7 +50,7 @@ public class ProfileController extends AbstractUserController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @CacheEvict(allEntries = true)
-    public ResponseEntity<User> register(@Parameter(description = "registered user (DTO) with details") @Valid @RequestBody UserTo userTo) {
+    public ResponseEntity<User> register(@Parameter(description = "user profile DTO") @Valid @RequestBody UserTo userTo) {
         log.info("register {}", userTo);
         ValidationUtil.checkNew(userTo);
         User created = prepareAndSave(UserUtil.createNewFromTo(userTo));
@@ -60,7 +64,7 @@ public class ProfileController extends AbstractUserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     @CacheEvict(allEntries = true)
-    public void update(@Parameter(description = "registered user (DTO) with details") @RequestBody @Valid UserTo userTo, @AuthenticationPrincipal AuthUser authUser) {
+    public void update(@Parameter(description = "user profile DTO") @RequestBody @Valid UserTo userTo, @AuthenticationPrincipal AuthUser authUser) {
         ValidationUtil.assureIdConsistent(userTo, authUser.id());
         User user = authUser.getUser();
         prepareAndSave(UserUtil.updateFromTo(user, userTo));

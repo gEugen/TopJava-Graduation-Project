@@ -8,6 +8,7 @@ import com.github.geugen.voting.util.RestaurantsUtil;
 import com.github.geugen.voting.util.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -27,6 +28,10 @@ import java.net.URI;
 import java.util.List;
 
 
+@Tag(
+        name = "Admin Restaurant Controller",
+        description = "allows administrator to get restaurant profile list " +
+                "or specific restaurant profile with details, create, update, delete them")
 @RestController
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -48,7 +53,7 @@ public class AdminRestaurantController {
 
     @Operation(summary = "Get restaurant profile by its id", description = "Returns found restaurant profile")
     @GetMapping("/{id}")
-    public AdminRestaurantTo get(@Parameter(description = "id of restaurant") @PathVariable int id) {
+    public AdminRestaurantTo get(@Parameter(description = "restaurant id") @PathVariable int id) {
         log.info("get {}", id);
         return RestaurantsUtil.createAdminTo(restaurantRepository.getExisted(id));
     }
@@ -69,7 +74,7 @@ public class AdminRestaurantController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
-    public void delete(@Parameter(description = "id of restaurant") @PathVariable int id) {
+    public void delete(@Parameter(description = "restaurant id") @PathVariable int id) {
         log.info("delete {}", id);
         restaurantRepository.deleteExisted(id);
     }
@@ -79,8 +84,8 @@ public class AdminRestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
     public void update(
-            @Parameter(description = "updated restaurant profile") @Valid @RequestBody AdminRestaurantTo restaurantTo,
-            @Parameter(description = "id of restaurant") @PathVariable int id) {
+            @Parameter(description = "restaurant profile") @Valid @RequestBody AdminRestaurantTo restaurantTo,
+            @Parameter(description = "restaurant id") @PathVariable int id) {
         log.info("update {}", id);
         ValidationUtil.assureIdConsistent(restaurantTo, id);
         Restaurant restaurant = new Restaurant(restaurantTo.getId(), restaurantTo.getName(), restaurantTo.getAddress());
@@ -92,7 +97,7 @@ public class AdminRestaurantController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(allEntries = true)
     public ResponseEntity<Restaurant> createWithLocation(
-            @Parameter(description = "created restaurant profile") @Valid @RequestBody AdminRestaurantTo restaurantTo) {
+            @Parameter(description = "restaurant profile") @Valid @RequestBody AdminRestaurantTo restaurantTo) {
         log.info("create {}", restaurantTo);
         ValidationUtil.checkNew(restaurantTo);
         Restaurant created = restaurantRepository.save(new Restaurant(restaurantTo.getId(), restaurantTo.getName(), restaurantTo.getAddress()));

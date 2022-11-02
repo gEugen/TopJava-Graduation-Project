@@ -7,6 +7,7 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 
 
 public class IllegalUniqIndexException extends AppException {
+
     public IllegalUniqIndexException(String msg) {
         super(HttpStatus.CONFLICT, msg, ErrorAttributeOptions.of(MESSAGE));
     }

@@ -8,6 +8,7 @@ import com.github.geugen.voting.util.validation.ValidationUtil;
 import com.github.geugen.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,9 +23,12 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 
-import static com.github.geugen.voting.util.VoteUtils.createTo;
+import static com.github.geugen.voting.util.VoteUtils.createUserVoteTo;
 
 
+@Tag(
+        name = "User Vote Controller",
+        description = "allows user to vote for restaurants, change their own choice, and get the details of their vote ")
 @RestController
 @RequestMapping(value = UserVoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
@@ -50,7 +54,7 @@ public class UserVoteController {
     public UserVoteTo get(@AuthenticationPrincipal AuthUser authUser, @Parameter(description = "vote id") @PathVariable int id) {
         log.info("getVote");
         Vote vote = voteRepository.checkAndGetBelong(id, authUser.id());
-        return createTo(vote);
+        return createUserVoteTo(vote);
     }
 
     @Operation(
@@ -60,34 +64,34 @@ public class UserVoteController {
     public UserVoteTo getByAuthUser(@AuthenticationPrincipal AuthUser authUser) {
         log.info("getVote");
         Vote vote = voteRepository.getExisted(authUser.id(), LocalDate.now());
-        return createTo(vote);
+        return createUserVoteTo(vote);
     }
 
     @Operation(
-            summary = "Primary vote for restaurant selected by authorized user",
+            summary = "Primary vote for restaurant selected by authorized user during the day",
             description = "Return vote with details")
     @PostMapping()
     @Transactional
     public ResponseEntity<UserVoteTo> vote(
             @AuthenticationPrincipal AuthUser authUser,
-            @Parameter(description = "vote dto") @Valid @RequestBody UserVoteTo voteTo) {
+            @Parameter(description = "vote DTO") @Valid @RequestBody UserVoteTo voteTo) {
         ValidationUtil.checkNew(voteTo);
         Vote created = voteService.saveWithVote(voteTo, authUser.id(), CREATE);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(createTo(created));
+        return ResponseEntity.created(uriOfNewResource).body(createUserVoteTo(created));
     }
 
     @Operation(
-            summary = "Re-vote for restaurant selected by authorized user",
+            summary = "Re-vote for restaurant selected by authorized user up to 11.00 a.m. inclusive",
             description = "Updates vote details")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     public void reVote(
             @AuthenticationPrincipal AuthUser authUser,
-            @Parameter(description = "vote dto") @Valid @RequestBody UserVoteTo voteTo, @PathVariable int id) {
+            @Parameter(description = "vote DTO") @Valid @RequestBody UserVoteTo voteTo, @PathVariable int id) {
         ValidationUtil.assureIdConsistent(voteTo, id);
         voteService.saveWithVote(voteTo, authUser.id(), UPDATE);
     }

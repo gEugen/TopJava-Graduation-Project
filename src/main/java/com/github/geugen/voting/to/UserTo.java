@@ -1,15 +1,17 @@
 package com.github.geugen.voting.to;
 
+import com.github.geugen.voting.HasIdAndEmail;
 import com.github.geugen.voting.util.validation.NoHtml;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import com.github.geugen.voting.HasIdAndEmail;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 
+@Schema(title = "UserTo - DTO used by Profile Controller")
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class UserTo extends NamedTo implements HasIdAndEmail {

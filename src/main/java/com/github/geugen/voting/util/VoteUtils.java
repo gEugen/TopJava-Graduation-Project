@@ -6,7 +6,7 @@ import com.github.geugen.voting.to.UserVoteTo;
 
 public class VoteUtils {
 
-    public static UserVoteTo createTo(Vote vote) {
+    public static UserVoteTo createUserVoteTo(Vote vote) {
         return new UserVoteTo(
                 vote.getId(), vote.getVoteDate(), vote.getVoteTime(), RestaurantsUtil.createAdminTo(vote.getRestaurant()));
     }

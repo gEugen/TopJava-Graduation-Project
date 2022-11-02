@@ -11,6 +11,7 @@ import com.github.geugen.voting.util.RestaurantsUtil;
 import com.github.geugen.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -24,11 +25,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.geugen.voting.util.RestaurantsUtil.*;
+import static com.github.geugen.voting.util.RestaurantsUtil.createUserRestaurantTos;
+import static com.github.geugen.voting.util.RestaurantsUtil.createVoteMarkUserRestaurantTo;
 import static com.github.geugen.voting.web.vote.UserVoteController.NOT_VOTED;
 import static com.github.geugen.voting.web.vote.UserVoteController.VOTED;
 
 
+@Tag(
+        name = "User Restaurant Controller",
+        description = "allows user to get restaurant list with current menu items or " +
+                "specific restaurant on voting day by restaurant id or name with address, " +
+                "to get same with marks of their vote")
 @RestController
 @RequestMapping(value = UserRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j

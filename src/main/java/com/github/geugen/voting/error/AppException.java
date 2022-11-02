@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Getter
 public class AppException extends ResponseStatusException {
+
     private final ErrorAttributeOptions options;
 
     public AppException(HttpStatus status, String message, ErrorAttributeOptions options) {

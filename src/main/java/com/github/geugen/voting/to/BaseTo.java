@@ -1,13 +1,14 @@
 package com.github.geugen.voting.to;
 
+import com.github.geugen.voting.HasId;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.github.geugen.voting.HasId;
 
 
+@Schema(title = "BaseTo - Parent DTO for NamedTo")
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Data

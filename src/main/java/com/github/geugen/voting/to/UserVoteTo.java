@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 
+@Schema(title = "UserVoteTo - DTO used by User Vote Controller")
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class UserVoteTo extends BaseTo {
