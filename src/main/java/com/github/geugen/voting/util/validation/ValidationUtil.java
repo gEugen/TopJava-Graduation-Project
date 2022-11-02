@@ -3,9 +3,12 @@ package com.github.geugen.voting.util.validation;
 
 import com.github.geugen.voting.HasId;
 import com.github.geugen.voting.error.IllegalRequestDataException;
+import com.github.geugen.voting.model.Vote;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
+
+import java.time.LocalTime;
 
 
 @UtilityClass
@@ -52,5 +55,19 @@ public class ValidationUtil {
     public static Throwable getRootCause(@NonNull Throwable t) {
         Throwable rootCause = NestedExceptionUtils.getRootCause(t);
         return rootCause != null ? rootCause : t;
+    }
+
+    public static Vote checkVote(Vote vote, int authUserId) {
+        if (vote == null) {
+            throw new IllegalRequestDataException("User with id=" + authUserId + " did not vote today");
+        }
+        return vote;
+    }
+
+    public static boolean checkReVoteTime(LocalTime voteTime, LocalTime endVoteChangeTime) {
+        if (voteTime.isAfter(endVoteChangeTime)) {
+            throw new IllegalRequestDataException("Vote change after 11.00 a.m. is not allowed");
+        }
+        return true;
     }
 }

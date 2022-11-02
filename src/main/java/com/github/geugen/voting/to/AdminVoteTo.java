@@ -1,7 +1,6 @@
 package com.github.geugen.voting.to;
 
-import com.github.geugen.voting.model.User;
-import com.github.geugen.voting.model.Vote;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.geugen.voting.util.DateTimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
@@ -14,24 +13,26 @@ import java.time.LocalTime;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class VoteTo extends BaseTo {
+public class AdminVoteTo extends BaseTo {
 
     @DateTimeFormat(pattern = DateTimeUtil.DATE_PATTERN)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     LocalDate voteDate;
 
     @DateTimeFormat(pattern = DateTimeUtil.TIME_PATTERN)
     @Schema(type = "date-time", pattern = "HH:mm:ss")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     LocalTime voteTime;
 
     AdminRestaurantTo restaurant;
 
-    User user;
+    UserTo user;
 
-    public VoteTo(Vote vote) {
-        super(vote.getId());
-        this.voteDate = vote.getVoteDate();
-        this.voteTime = vote.getVoteTime();
-        this.restaurant = new AdminRestaurantTo(vote.getRestaurant());
-        this.user = vote.getUser();
+    public AdminVoteTo(Integer id, LocalDate voteDate, LocalTime voteTime, AdminRestaurantTo restaurant, UserTo user) {
+        super(id);
+        this.voteDate = voteDate;
+        this.voteTime = voteTime;
+        this.restaurant = restaurant;
+        this.user = user;
     }
 }

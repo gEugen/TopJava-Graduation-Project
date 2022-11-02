@@ -74,7 +74,7 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
         int newId = created.id();
         aNew.setId(newId);
         RestaurantTestData.RESTAURANT_TO_MATCHER.assertMatch(created, aNew);
-        RestaurantTestData.RESTAURANT_TO_MATCHER.assertMatch(RestaurantsUtil.createTo(restaurantRepository.getExisted(newId)), aNew);
+        RestaurantTestData.RESTAURANT_TO_MATCHER.assertMatch(RestaurantsUtil.createAdminTo(restaurantRepository.getExisted(newId)), aNew);
     }
 
     @Test

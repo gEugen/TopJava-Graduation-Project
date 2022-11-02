@@ -18,10 +18,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.geugen.voting.util.RestaurantsUtil.createTo;
+import static com.github.geugen.voting.util.RestaurantsUtil.createUserTo;
 import static com.github.geugen.voting.web.vote.UserVoteController.NOT_VOTED;
 import static com.github.geugen.voting.web.vote.UserVoteController.VOTED;
 
@@ -47,7 +48,7 @@ public class UserRestaurantController {
         int authUserId = authUser.id();
         log.info("getAllWithVoteMark for user {}", authUserId);
         List<Restaurant> restaurants = restaurantRepository.getAllWithMenuItems();
-        Vote vote = voteRepository.getVote(authUserId);
+        Vote vote = voteRepository.getVote(authUserId, LocalDate.now());
         Integer votedRestaurantId = null;
         if (vote != null) {
             votedRestaurantId = vote.getRestaurant().getId();
@@ -55,9 +56,9 @@ public class UserRestaurantController {
         List<UserRestaurantTo> userRestaurantToList = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
             if (votedRestaurantId != null && votedRestaurantId.equals(restaurant.getId())) {
-                userRestaurantToList.add(createTo(restaurant, VOTED));
+                userRestaurantToList.add(createUserTo(restaurant, VOTED));
             } else {
-                userRestaurantToList.add(createTo(restaurant, NOT_VOTED));
+                userRestaurantToList.add(createUserTo(restaurant, NOT_VOTED));
             }
         }
         return userRestaurantToList;
@@ -72,16 +73,16 @@ public class UserRestaurantController {
         int authUserId = authUser.id();
         log.info("getWithVoteMark restaurant {} for user {}", id, authUserId);
         Restaurant restaurant = restaurantRepository.getExistedWithMenuItems(id);
-        Vote vote = voteRepository.getVote(authUserId);
+        Vote vote = voteRepository.getVote(authUserId, LocalDate.now());
         Integer votedRestaurantId = null;
         if (vote != null) {
             votedRestaurantId = vote.getRestaurant().getId();
         }
         UserRestaurantTo userRestaurantTo;
         if (votedRestaurantId != null && votedRestaurantId == id) {
-            userRestaurantTo = createTo(restaurant, VOTED);
+            userRestaurantTo = createUserTo(restaurant, VOTED);
         } else {
-            userRestaurantTo = createTo(restaurant, NOT_VOTED);
+            userRestaurantTo = createUserTo(restaurant, NOT_VOTED);
         }
         return userRestaurantTo;
     }
@@ -97,16 +98,16 @@ public class UserRestaurantController {
         int authUserId = authUser.id();
         Restaurant restaurant = restaurantRepository.getExistedWithMenuItemsByNameAndAddress(name, city, street, number);
         log.info("getWithVoteMarkByNameAndAddress {} with [{}, {}, {}] for user {}", name, city, street, number, authUserId);
-        Vote vote = voteRepository.getVote(authUserId);
+        Vote vote = voteRepository.getVote(authUserId, LocalDate.now());
         Integer votedRestaurantId = null;
         if (vote != null) {
             votedRestaurantId = vote.getRestaurant().getId();
         }
         UserRestaurantTo userRestaurantTo;
         if (votedRestaurantId != null && votedRestaurantId.equals(restaurant.getId())) {
-            userRestaurantTo = createTo(restaurant, VOTED);
+            userRestaurantTo = createUserTo(restaurant, VOTED);
         } else {
-            userRestaurantTo = createTo(restaurant, NOT_VOTED);
+            userRestaurantTo = createUserTo(restaurant, NOT_VOTED);
         }
         return userRestaurantTo;
     }

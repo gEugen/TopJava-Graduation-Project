@@ -4,6 +4,7 @@ package com.github.geugen.voting.web.restaurant;
 import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.repository.RestaurantRepository;
 import com.github.geugen.voting.to.AdminRestaurantTo;
+import com.github.geugen.voting.util.RestaurantsUtil;
 import com.github.geugen.voting.util.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,7 +51,7 @@ public class AdminRestaurantController {
     @GetMapping("/{id}")
     public AdminRestaurantTo get(@Parameter(description = "id of restaurant") @PathVariable int id) {
         log.info("get {}", id);
-        return new AdminRestaurantTo(restaurantRepository.getExisted(id));
+        return RestaurantsUtil.createAdminTo(restaurantRepository.getExisted(id));
     }
 
     @Operation(summary = "Get restaurant profile by name and address", description = "Returns found restaurant profile")
@@ -62,7 +63,7 @@ public class AdminRestaurantController {
             @Parameter(description = "building number") @RequestParam @NotNull Integer number) {
         Restaurant restaurant = restaurantRepository.getExistedByNameAndAddress(name, city, street, number);
         log.info("get {} with [{}, {}, {}]", name, city, street, number);
-        return new AdminRestaurantTo(restaurant);
+        return RestaurantsUtil.createAdminTo(restaurant);
     }
 
     @Operation(summary = "Delete restaurant profile by its id", description = "Delete restaurant profile")

@@ -3,8 +3,8 @@ package com.github.geugen.voting.util;
 import com.github.geugen.voting.config.SecurityConfiguration;
 import com.github.geugen.voting.model.Role;
 import com.github.geugen.voting.model.User;
-import lombok.experimental.UtilityClass;
 import com.github.geugen.voting.to.UserTo;
+import lombok.experimental.UtilityClass;
 
 
 @UtilityClass
@@ -25,5 +25,9 @@ public class UserUtil {
         user.setPassword(SecurityConfiguration.PASSWORD_ENCODER.encode(user.getPassword()));
         user.setEmail(user.getEmail().toLowerCase());
         return user;
+    }
+
+    public static UserTo getTo(User user) {
+        return new UserTo(user.getId(), user.getName(), user.getEmail(), user.getPassword());
     }
 }

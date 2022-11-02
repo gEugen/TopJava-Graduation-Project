@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.VoteRepository;
-import com.github.geugen.voting.to.VoteTo;
+import com.github.geugen.voting.to.AdminVoteTo;
 
 import java.util.List;
 
+import static com.github.geugen.voting.util.VoteUtils.createAdminTo;
 import static com.github.geugen.voting.util.VoteUtils.createTos;
 
 
@@ -30,22 +31,22 @@ public class AdminVoteController {
 
     @Operation(summary = "Get vote with user and restaurant details by vote id", description = "Returns vote")
     @GetMapping("/{id}")
-    public VoteTo getVote(@Parameter(description = "id of vote") @PathVariable int id) {
+    public AdminVoteTo getVote(@Parameter(description = "id of vote") @PathVariable int id) {
         log.info("getVote");
         Vote vote = voteRepository.getExisted(id);
-        return new VoteTo(vote);
+        return createAdminTo(vote);
     }
 
     @Operation(summary = "Get user votes for selected restaurant by its id", description = "Returns user votes for selected restaurant")
     @GetMapping("/{id}/user-votes")
-    public List<VoteTo> getVotesByRestaurant(@Parameter(description = "id of restaurant") @PathVariable int id) {
+    public List<AdminVoteTo> getVotesByRestaurant(@Parameter(description = "id of restaurant") @PathVariable int id) {
         log.info("getWithUsersVotes");
         return createTos(voteRepository.getVotesByRestaurant(id));
     }
 
     @Operation(summary = "Get all user vote list", description = "Returns all user vote list")
     @GetMapping("/all-user-votes")
-    public List<VoteTo> getAllVotes() {
+    public List<AdminVoteTo> getAllVotes() {
         log.info("getAllWithUsersVotes");
         return createTos(voteRepository.findAll());
     }

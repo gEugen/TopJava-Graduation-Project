@@ -46,7 +46,7 @@ public class Vote extends BaseEntity {
     @Schema(hidden = true)
     private User user;
 
-    public Vote(int id, Restaurant restaurant, User user) {
+    public Vote(Integer id, Restaurant restaurant, User user) {
         super(id);
         this.restaurant = restaurant;
         this.user = user;

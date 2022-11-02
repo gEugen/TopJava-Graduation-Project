@@ -13,7 +13,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static com.github.geugen.voting.service.VoteService.setEndVoteChangeTime;
-import static com.github.geugen.voting.util.RestaurantsUtil.createTo;
+import static com.github.geugen.voting.util.RestaurantsUtil.createUserTo;
 import static com.github.geugen.voting.util.RestaurantsUtil.createTos;
 import static com.github.geugen.voting.web.restaurant.RestaurantTestData.*;
 import static com.github.geugen.voting.web.user.UserTestData.*;
@@ -38,7 +38,7 @@ public class UserVoteControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_TO_MATCHER.contentJson(createTo(restaurant5, VOTED)));
+                .andExpect(RESTAURANT_TO_MATCHER.contentJson(createUserTo(restaurant5, VOTED)));
     }
 
     @Test
@@ -51,9 +51,9 @@ public class UserVoteControllerTest extends AbstractControllerTest {
                 .andExpect(
                         RESTAURANT_TO_MATCHER.contentJson(
                                 createTos(
-                                        createTo(restaurant1, NOT_VOTED), createTo(restaurant2, NOT_VOTED),
-                                        createTo(restaurant3, VOTED), createTo(restaurant4, NOT_VOTED),
-                                        createTo(restaurant5, NOT_VOTED))));
+                                        createUserTo(restaurant1, NOT_VOTED), createUserTo(restaurant2, NOT_VOTED),
+                                        createUserTo(restaurant3, VOTED), createUserTo(restaurant4, NOT_VOTED),
+                                        createUserTo(restaurant5, NOT_VOTED))));
     }
 
     @Test
