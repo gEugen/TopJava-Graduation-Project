@@ -14,8 +14,8 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static com.github.geugen.voting.service.VoteService.setEndVoteChangeTime;
-import static com.github.geugen.voting.util.RestaurantsUtil.createUserTo;
-import static com.github.geugen.voting.util.RestaurantsUtil.createTos;
+import static com.github.geugen.voting.util.RestaurantsUtil.createTestVoteMarkUserRestaurantTo;
+import static com.github.geugen.voting.util.RestaurantsUtil.createTestVoteMarkUserRestaurantTos;
 import static com.github.geugen.voting.web.restaurant.RestaurantTestData.*;
 import static com.github.geugen.voting.web.user.UserTestData.*;
 import static com.github.geugen.voting.web.vote.VoteTestData.RESTAURANT_TO_MATCHER;
@@ -39,7 +39,7 @@ public class UserVoteControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_TO_MATCHER.contentJson(createUserTo(restaurant5, VOTED)));
+                .andExpect(RESTAURANT_TO_MATCHER.contentJson(createTestVoteMarkUserRestaurantTo(restaurant5, VOTED)));
     }
 
     @Test
@@ -51,10 +51,10 @@ public class UserVoteControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(
                         RESTAURANT_TO_MATCHER.contentJson(
-                                createTos(
-                                        createUserTo(restaurant1, NOT_VOTED), createUserTo(restaurant2, NOT_VOTED),
-                                        createUserTo(restaurant3, VOTED), createUserTo(restaurant4, NOT_VOTED),
-                                        createUserTo(restaurant5, NOT_VOTED))));
+                                createTestVoteMarkUserRestaurantTos(
+                                        createTestVoteMarkUserRestaurantTo(restaurant1, NOT_VOTED), createTestVoteMarkUserRestaurantTo(restaurant2, NOT_VOTED),
+                                        createTestVoteMarkUserRestaurantTo(restaurant3, VOTED), createTestVoteMarkUserRestaurantTo(restaurant4, NOT_VOTED),
+                                        createTestVoteMarkUserRestaurantTo(restaurant5, NOT_VOTED))));
     }
 
     @Test

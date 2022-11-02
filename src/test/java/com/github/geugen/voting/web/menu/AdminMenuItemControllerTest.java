@@ -2,6 +2,9 @@ package com.github.geugen.voting.web.menu;
 
 
 import com.github.geugen.voting.model.MenuItem;
+import com.github.geugen.voting.repository.MenuItemRepository;
+import com.github.geugen.voting.util.JsonUtil;
+import com.github.geugen.voting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -10,22 +13,19 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.geugen.voting.repository.MenuItemRepository;
-import com.github.geugen.voting.util.JsonUtil;
-import com.github.geugen.voting.web.AbstractControllerTest;
 
+import static com.github.geugen.voting.web.restaurant.RestaurantTestData.*;
+import static com.github.geugen.voting.web.user.UserTestData.ADMIN_MAIL;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static com.github.geugen.voting.web.restaurant.RestaurantTestData.*;
-import static com.github.geugen.voting.web.user.UserTestData.ADMIN_MAIL;
 
 
-class MenuItemControllerTest extends AbstractControllerTest {
+class AdminMenuItemControllerTest extends AbstractControllerTest {
 
-    private static final String REST_URL = MenuItemController.REST_URL + '/';
+    private static final String REST_URL = AdminMenuItemController.REST_URL + '/';
 
     @Autowired
     private MenuItemRepository repository;

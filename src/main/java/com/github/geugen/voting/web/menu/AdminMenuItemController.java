@@ -27,12 +27,12 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping(value = MenuItemController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = AdminMenuItemController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
 @CacheConfig(cacheNames = "menu_item")
-public class MenuItemController {
-    static final String REST_URL = "/api/admin/restaurants/{restaurantId}/menu_items";
+public class AdminMenuItemController {
+    static final String REST_URL = "/api/admin/restaurants/{restaurantId}/menu-items";
 
     private final MenuItemService menuItemService;
 
@@ -40,57 +40,65 @@ public class MenuItemController {
 
     private final RestaurantRepository restaurantRepository;
 
-    @Operation(summary = "Get actual menu item list for restaurant by its id", description = "Returns actual menu item list")
+    @Operation(
+            summary = "Get actual menu item list for restaurant by its id",
+            description = "Returns actual menu item list")
     @GetMapping()
     @Cacheable
-    public List<MenuItem> getActualByRestaurant(@Parameter(description = "id of restaurant") @PathVariable int restaurantId) {
+    public List<MenuItem> getActualByRestaurant(@Parameter(description = "restaurant id") @PathVariable int restaurantId) {
         log.info("get {}", restaurantId);
         restaurantRepository.getExisted(restaurantId);
         return menuItemRepository.getAll(restaurantId, LocalDate.now());
     }
 
-    @Operation(summary = "Get restaurant menu item list by restaurant id and date", description = "Returns menu item list")
+    @Operation(
+            summary = "Get restaurant menu item list by restaurant id and date",
+            description = "Returns menu item list")
     @GetMapping("/by-date")
     public List<MenuItem> getAllByRestaurantForGivenDay(
-            @Parameter(description = "id of restaurant") @PathVariable int restaurantId,
+            @Parameter(description = "restaurant id") @PathVariable int restaurantId,
             @Parameter(description = "request date") @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestDate) {
         log.info("get {}", restaurantId);
         restaurantRepository.getExisted(restaurantId);
         return menuItemRepository.getAll(restaurantId, requestDate);
     }
 
-    @Operation(summary = "Get menu item for restaurant by its ides", description = "Returns response with menu item")
+    @Operation(
+            summary = "Get menu item for restaurant by its ides",
+            description = "Returns response with menu item")
     @GetMapping("/{itemId}")
     public ResponseEntity<MenuItem> get(
-            @Parameter(description = "id of restaurant") @PathVariable int restaurantId,
-            @Parameter(description = "id of menu item") @PathVariable int itemId) {
+            @Parameter(description = "restaurant id") @PathVariable int restaurantId,
+            @Parameter(description = "menu item id") @PathVariable int itemId) {
         log.info("get menu item {} for restaurant {}", itemId, restaurantId);
         menuItemRepository.checkBelong(itemId, restaurantId);
         return ResponseEntity.of(menuItemRepository.findById(itemId));
     }
 
-    @Operation(summary = "Delete menu item for restaurant by its ides", description = "Deletes menu item")
+    @Operation(
+            summary = "Delete menu item for restaurant by its ides",
+            description = "Deletes menu item")
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
     public void delete(
-            @Parameter(description = "id of restaurant") @PathVariable int restaurantId,
-            @Parameter(description = "id of menu item") @PathVariable int itemId) {
+            @Parameter(description = "restaurant id") @PathVariable int restaurantId,
+            @Parameter(description = "menu item id") @PathVariable int itemId) {
         log.info("delete menu item {} for restaurant {}", restaurantId, itemId);
         MenuItem menuItem = menuItemRepository.checkBelong(itemId, restaurantId);
         menuItemRepository.delete(menuItem);
     }
 
     @Operation(
-            summary = "Update menuItem details for restaurant by its ides",
+            summary = "Update menu item details for restaurant by its ides",
             description = "Updates and returns response with updated menu item")
     @PutMapping(value = "/{itemId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @CacheEvict(allEntries = true)
     public void update(
             @Parameter(description = "updated menu item") @Valid @RequestBody MenuItem menuItem,
-            @Parameter(description = "id of restaurant") @PathVariable int restaurantId,
-            @Parameter(description = "id of menu item") @PathVariable int itemId) {
+            @Parameter(description = "restaurant id") @PathVariable int restaurantId,
+            @Parameter(description = "menu item id") @PathVariable int itemId) {
         log.info("update menu item {} for restaurant {}", menuItem, restaurantId);
         ValidationUtil.assureIdConsistent(menuItem, itemId);
         menuItemRepository.checkBelong(itemId, restaurantId);
@@ -98,12 +106,13 @@ public class MenuItemController {
     }
 
     @Operation(
-            summary = "Create new menu item for restaurant by its id", description = "Creates new menu item and returns response with new menu item")
+            summary = "Create new menu item for restaurant by its id",
+            description = "Creates new menu item and returns response with new menu item")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @CacheEvict(allEntries = true)
     public ResponseEntity<MenuItem> createWithLocation(
             @Parameter(description = "created menu item") @Valid @RequestBody MenuItem menuItem,
-            @Parameter(description = "id of restaurant") @PathVariable int restaurantId) {
+            @Parameter(description = "restaurant id") @PathVariable int restaurantId) {
         log.info("create menu item {} for restaurant {}", menuItem, restaurantId);
         ValidationUtil.checkNew(menuItem);
         MenuItem created = menuItemService.save(menuItem, restaurantId);

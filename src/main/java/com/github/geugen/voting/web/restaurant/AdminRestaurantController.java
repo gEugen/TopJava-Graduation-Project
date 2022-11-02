@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
-
-import static com.github.geugen.voting.util.RestaurantsUtil.createTos;
 
 
 @RestController
@@ -44,7 +43,7 @@ public class AdminRestaurantController {
     @Cacheable
     public List<AdminRestaurantTo> getAll() {
         log.info("getAll");
-        return createTos(restaurantRepository.findAll());
+        return RestaurantsUtil.createAdminRestaurantTos(restaurantRepository.findAll(Sort.by("name")));
     }
 
     @Operation(summary = "Get restaurant profile by its id", description = "Returns found restaurant profile")

@@ -11,17 +11,20 @@ import java.util.List;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class UserRestaurantTo extends NamedTo {
+public class VoteMarkUserRestaurantTo extends NamedTo {
 
     @NotNull
     Address address;
 
     List<MenuItem> menuItems;
 
-    public UserRestaurantTo(Integer id, String name, Address address, List<MenuItem> menuItems) {
+    boolean voteMark;
+
+    public VoteMarkUserRestaurantTo(Integer id, String name, Address address, List<MenuItem> menuItems, boolean voteMark) {
         super(id, name);
         this.address = address;
         this.menuItems = menuItems;
+        this.voteMark = voteMark;
     }
 
     @Override
