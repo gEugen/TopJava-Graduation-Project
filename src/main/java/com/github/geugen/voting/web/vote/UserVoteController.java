@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
 
 import static com.github.geugen.voting.util.VoteUtils.createTo;
 
@@ -36,23 +37,35 @@ public class UserVoteController {
     public static final boolean CREATE = false;
     public static final boolean UPDATE = true;
 
-    static final String REST_URL = "/api/user/vote/restaurant";
+    static final String REST_URL = "/api/user/votes";
 
     private final VoteService voteService;
 
     private final VoteRepository voteRepository;
 
     @Operation(
-            summary = "Get vote with restaurant and user own details by authorized user",
+            summary = "Get own vote with restaurant and user details by id",
             description = "Returns vote with details")
-    @GetMapping()
-    public UserVoteTo get(@AuthenticationPrincipal AuthUser authUser) {
+    @GetMapping("/{id}")
+    public UserVoteTo get(@AuthenticationPrincipal AuthUser authUser, @Parameter(description = "vote id") @PathVariable int id) {
         log.info("getVote");
-        Vote vote = voteRepository.getExisted(authUser.id());
+        Vote vote = voteRepository.checkAndGetBelong(id, authUser.id());
         return createTo(vote);
     }
 
-    @Operation(summary = "Primary vote for restaurant selected by user", description = "Return vote with details")
+    @Operation(
+            summary = "Get actual own vote with restaurant and user details",
+            description = "Returns vote with details")
+    @GetMapping()
+    public UserVoteTo getByAuthUser(@AuthenticationPrincipal AuthUser authUser) {
+        log.info("getVote");
+        Vote vote = voteRepository.getExisted(authUser.id(), LocalDate.now());
+        return createTo(vote);
+    }
+
+    @Operation(
+            summary = "Primary vote for restaurant selected by authorized user",
+            description = "Return vote with details")
     @PostMapping()
     @Transactional
     public ResponseEntity<UserVoteTo> vote(
@@ -66,7 +79,9 @@ public class UserVoteController {
         return ResponseEntity.created(uriOfNewResource).body(createTo(created));
     }
 
-    @Operation(summary = "Re-vote for restaurant selected by user", description = "Updates vote details")
+    @Operation(
+            summary = "Re-vote for restaurant selected by authorized user",
+            description = "Updates vote details")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional

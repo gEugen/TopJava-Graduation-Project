@@ -5,14 +5,12 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.VoteRepository;
 import com.github.geugen.voting.to.AdminVoteTo;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.github.geugen.voting.util.VoteUtils.createAdminTo;
@@ -25,27 +23,29 @@ import static com.github.geugen.voting.util.VoteUtils.createTos;
 @AllArgsConstructor
 public class AdminVoteController {
 
-    static final String REST_URL = "/api/admin/vote/restaurant";
+    static final String REST_URL = "/api/admin/votes";
 
     private final VoteRepository voteRepository;
 
-    @Operation(summary = "Get vote with user and restaurant details by vote id", description = "Returns vote")
-    @GetMapping("/{id}")
-    public AdminVoteTo getVote(@Parameter(description = "id of vote") @PathVariable int id) {
+    @Operation(summary = "Get actual vote with user and restaurant details by user id", description = "Returns actual vote")
+    @GetMapping("/by-user")
+    public AdminVoteTo getVote(@Parameter(description = "user id") @RequestParam int userId) {
         log.info("getVote");
-        Vote vote = voteRepository.getExisted(id);
+        Vote vote = voteRepository.getExisted(userId, LocalDate.now());
         return createAdminTo(vote);
     }
 
-    @Operation(summary = "Get user votes for selected restaurant by its id", description = "Returns user votes for selected restaurant")
-    @GetMapping("/{id}/user-votes")
-    public List<AdminVoteTo> getVotesByRestaurant(@Parameter(description = "id of restaurant") @PathVariable int id) {
+    @Operation(
+            summary = "Get actual votes for selected restaurant by its id",
+            description = "Returns actual votes for selected restaurant")
+    @GetMapping("/votes-by-restaurant")
+    public List<AdminVoteTo> getVotesByRestaurant(@Parameter(description = "restaurant id") @RequestParam int restaurantId) {
         log.info("getWithUsersVotes");
-        return createTos(voteRepository.getVotesByRestaurant(id));
+        return createTos(voteRepository.getVotesByRestaurant(restaurantId, LocalDate.now()));
     }
 
-    @Operation(summary = "Get all user vote list", description = "Returns all user vote list")
-    @GetMapping("/all-user-votes")
+    @Operation(summary = "Get all actual vote list", description = "Returns all actual vote list")
+    @GetMapping("/all-votes")
     public List<AdminVoteTo> getAllVotes() {
         log.info("getAllWithUsersVotes");
         return createTos(voteRepository.findAll());

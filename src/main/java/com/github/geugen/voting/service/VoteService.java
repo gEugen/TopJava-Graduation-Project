@@ -45,6 +45,7 @@ public class VoteService {
         Address address = restaurant.getAddress();
         Vote vote = null;
         if (createOrUpdate == CREATE) {
+            ValidationUtil.checkUniq(voteRepository.findByUserIdAndVoteDate(authUserId, voteDate).isPresent(), authUserId, voteDate);
             vote = voteRepository.save(
                     new Vote(
                             null, voteDate, voteTime,

@@ -3,11 +3,13 @@ package com.github.geugen.voting.util.validation;
 
 import com.github.geugen.voting.HasId;
 import com.github.geugen.voting.error.IllegalRequestDataException;
+import com.github.geugen.voting.error.IllegalUniqIndexException;
 import com.github.geugen.voting.model.Vote;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.lang.NonNull;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 
@@ -42,10 +44,10 @@ public class ValidationUtil {
         return obj;
     }
 
-    public static <T> T checkExisted(T obj, String city, String street, int buildingNumber) {
+    public static <T> T checkExisted(T obj, String name, String city, String street, int buildingNumber) {
         if (obj == null) {
             throw new IllegalRequestDataException(
-                    "Entity with address=[" + city + ", " + street + ", " + buildingNumber + "] not found");
+                    "Entity with name= " + name + " and address= [" + city + ", " + street + ", " + buildingNumber + "] not found");
         }
         return obj;
     }
@@ -69,5 +71,11 @@ public class ValidationUtil {
             throw new IllegalRequestDataException("Vote change after 11.00 a.m. is not allowed");
         }
         return true;
+    }
+
+    public static void checkUniq(boolean indexIsPresent, int authUserId, LocalDate voteDate) {
+        if (indexIsPresent) {
+            throw new IllegalUniqIndexException("User id=" + authUserId + " has already voted today " + voteDate);
+        }
     }
 }

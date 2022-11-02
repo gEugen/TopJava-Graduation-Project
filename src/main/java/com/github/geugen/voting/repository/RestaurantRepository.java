@@ -40,10 +40,10 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
     }
 
     default Restaurant getExistedWithMenuItemsByNameAndAddress(String name, String city, String street, int number) {
-        return ValidationUtil.checkExisted(getWithMenuItemsByNameAndAddress(name, city, street, number), city, street, number);
+        return ValidationUtil.checkExisted(getWithMenuItemsByNameAndAddress(name, city, street, number), name, city, street, number);
     }
 
     default Restaurant getExistedByNameAndAddress(String name, String city, String street, int number) {
-        return ValidationUtil.checkExisted(getByNameAndAddress(name, city, street, number), city, street, number);
+        return ValidationUtil.checkExisted(getByNameAndAddress(name, city, street, number), name, city, street, number);
     }
 }

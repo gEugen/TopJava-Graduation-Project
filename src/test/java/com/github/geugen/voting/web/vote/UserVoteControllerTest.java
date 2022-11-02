@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class UserVoteControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated());
 
-        VOTE_SAVE_MATCHER.assertMatch(voteRepository.getVotesByRestaurant(RESTAURANT2_ID), List.of(user6Vote));
+        VOTE_SAVE_MATCHER.assertMatch(voteRepository.getVotesByRestaurant(RESTAURANT2_ID, LocalDate.now()), List.of(user6Vote));
     }
 
     @Test
@@ -75,8 +76,8 @@ public class UserVoteControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
-        List<Vote> currentVotes = voteRepository.getVotesByRestaurant(RESTAURANT1_ID);
-        List<Vote> previousVotes = voteRepository.getVotesByRestaurant(RESTAURANT3_ID);
+        List<Vote> currentVotes = voteRepository.getVotesByRestaurant(RESTAURANT1_ID, LocalDate.now());
+        List<Vote> previousVotes = voteRepository.getVotesByRestaurant(RESTAURANT3_ID, LocalDate.now());
         VOTE_MATCHER.assertMatch(currentVotes, getTestCurrentVotes());
         VOTE_MATCHER.assertMatch(previousVotes, getTestPreviousVotes());
     }
@@ -89,8 +90,8 @@ public class UserVoteControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isForbidden());
 
-        List<Vote> currentVotes = voteRepository.getVotesByRestaurant(RESTAURANT1_ID);
-        List<Vote> previousVotes = voteRepository.getVotesByRestaurant(RESTAURANT3_ID);
+        List<Vote> currentVotes = voteRepository.getVotesByRestaurant(RESTAURANT1_ID, LocalDate.now());
+        List<Vote> previousVotes = voteRepository.getVotesByRestaurant(RESTAURANT3_ID, LocalDate.now());
         VOTE_MATCHER.assertMatch(currentVotes, List.of(user1Vote, adminVote));
         VOTE_MATCHER.assertMatch(previousVotes, List.of(user2Vote, user3Vote));
     }
