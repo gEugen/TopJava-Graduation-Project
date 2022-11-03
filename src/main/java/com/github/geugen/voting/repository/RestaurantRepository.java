@@ -2,8 +2,6 @@ package com.github.geugen.voting.repository;
 
 import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.util.validation.ValidationUtil;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,10 +9,10 @@ import java.util.List;
 
 
 @Transactional(readOnly = true)
-@CacheConfig(cacheNames = "restaurant")
+//@CacheConfig(cacheNames = "restaurant")
 public interface RestaurantRepository extends BaseRepository<Restaurant> {
 
-    @Cacheable
+    //    @Cacheable
     @Query(
             "SELECT DISTINCT r FROM Restaurant r LEFT JOIN FETCH r.menuItems mi " +
                     "WHERE SIZE(r.menuItems) = 0 OR mi.registered = current_date ORDER BY r.name ASC")

@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +38,7 @@ import static com.github.geugen.voting.web.vote.UserVoteController.VOTED;
 @RestController
 @RequestMapping(value = UserRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-@CacheConfig(cacheNames = "restaurant")
+//@CacheConfig(cacheNames = "restaurant")
 @AllArgsConstructor
 public class UserRestaurantController {
 
@@ -53,6 +52,7 @@ public class UserRestaurantController {
             summary = "Get all restaurants with menu items by authorized user",
             description = "Returns restaurants with menu items")
     @GetMapping()
+//    @Cacheable
     public List<UserRestaurantTo> getAll(@AuthenticationPrincipal AuthUser authUser) {
         int authUserId = authUser.id();
         log.info("getAll for user {}", authUserId);

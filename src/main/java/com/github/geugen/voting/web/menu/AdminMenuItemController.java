@@ -10,9 +10,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,7 +32,7 @@ import java.util.List;
 @RequestMapping(value = AdminMenuItemController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
-@CacheConfig(cacheNames = "menu_item")
+//@CacheConfig(cacheNames = "menu_item")
 public class AdminMenuItemController {
     static final String REST_URL = "/api/admin/restaurants/{restaurantId}/menu-items";
 
@@ -49,7 +46,6 @@ public class AdminMenuItemController {
             summary = "Get actual menu item list for restaurant by its id",
             description = "Returns actual menu item list")
     @GetMapping()
-    @Cacheable
     public List<MenuItem> getActualByRestaurant(@Parameter(description = "restaurant id") @PathVariable int restaurantId) {
         log.info("get {}", restaurantId);
         restaurantRepository.getExisted(restaurantId);
@@ -85,7 +81,7 @@ public class AdminMenuItemController {
             description = "Deletes menu item")
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(allEntries = true)
+//    @CacheEvict(allEntries = true)
     public void delete(
             @Parameter(description = "restaurant id") @PathVariable int restaurantId,
             @Parameter(description = "menu item id") @PathVariable int itemId) {
@@ -99,7 +95,7 @@ public class AdminMenuItemController {
             description = "Updates and returns response with updated menu item")
     @PutMapping(value = "/{itemId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(allEntries = true)
+//    @CacheEvict(allEntries = true)
     public void update(
             @Parameter(description = "updated menu item") @Valid @RequestBody MenuItem menuItem,
             @Parameter(description = "restaurant id") @PathVariable int restaurantId,
@@ -114,7 +110,7 @@ public class AdminMenuItemController {
             summary = "Create new menu item for restaurant by its id",
             description = "Creates new menu item and returns response with new menu item")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @CacheEvict(allEntries = true)
+//    @CacheEvict(allEntries = true)
     public ResponseEntity<MenuItem> createWithLocation(
             @Parameter(description = "created menu item") @Valid @RequestBody MenuItem menuItem,
             @Parameter(description = "restaurant id") @PathVariable int restaurantId) {
