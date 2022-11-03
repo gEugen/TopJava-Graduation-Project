@@ -2,6 +2,7 @@ package com.github.geugen.voting.util.validation;
 
 
 import com.github.geugen.voting.HasId;
+import com.github.geugen.voting.error.DataConflictException;
 import com.github.geugen.voting.error.IllegalRequestDataException;
 import com.github.geugen.voting.error.IllegalUniqIndexException;
 import com.github.geugen.voting.model.Vote;
@@ -61,7 +62,7 @@ public class ValidationUtil {
 
     public static Vote checkVote(Vote vote, int authUserId) {
         if (vote == null) {
-            throw new IllegalRequestDataException("User with id=" + authUserId + " did not vote today");
+            throw new DataConflictException("User with id=" + authUserId + " did not vote today");
         }
         return vote;
     }
@@ -76,6 +77,12 @@ public class ValidationUtil {
     public static void checkUniq(boolean indexIsPresent, int authUserId, LocalDate voteDate) {
         if (indexIsPresent) {
             throw new IllegalUniqIndexException("User id=" + authUserId + " has already voted today " + voteDate);
+        }
+    }
+
+    public static void checkIdPresence(Integer id) {
+        if (id == null) {
+            throw new DataConflictException("Restaurant from request body must has id");
         }
     }
 }

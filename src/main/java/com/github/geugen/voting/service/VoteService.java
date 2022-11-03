@@ -1,12 +1,10 @@
 package com.github.geugen.voting.service;
 
-import com.github.geugen.voting.model.Address;
-import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.RestaurantRepository;
 import com.github.geugen.voting.repository.UserRepository;
 import com.github.geugen.voting.repository.VoteRepository;
-import com.github.geugen.voting.to.UserVoteTo;
+import com.github.geugen.voting.to.SaveVoteTo;
 import com.github.geugen.voting.util.validation.ValidationUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 
+import static com.github.geugen.voting.util.validation.ValidationUtil.checkIdPresence;
 import static com.github.geugen.voting.web.vote.UserVoteController.CREATE;
 import static com.github.geugen.voting.web.vote.UserVoteController.UPDATE;
 
@@ -37,28 +37,26 @@ public class VoteService {
     }
 
     @Transactional
-    public Vote saveWithVote(UserVoteTo voteTo, int authUserId, boolean createOrUpdate) {
+    public Vote saveWithVote(SaveVoteTo voteTo, int authUserId, boolean createOrUpdate) {
+        Integer voteToRestaurantId = voteTo.getRestaurantId();
+        checkIdPresence(voteToRestaurantId);
         LocalDateTime localDateTime = LocalDateTime.now();
-        LocalTime voteTime = localDateTime.toLocalTime();
+        LocalTime voteTime = localDateTime.toLocalTime().truncatedTo(ChronoUnit.SECONDS);
         LocalDate voteDate = localDateTime.toLocalDate();
-        Restaurant restaurant = voteTo.getRestaurant();
-        Address address = restaurant.getAddress();
         Vote vote = null;
         if (createOrUpdate == CREATE) {
             ValidationUtil.checkUniq(voteRepository.findByUserIdAndVoteDate(authUserId, voteDate).isPresent(), authUserId, voteDate);
             vote = voteRepository.save(
                     new Vote(
                             null, voteDate, voteTime,
-                            restaurantRepository.getExistedByNameAndAddress(
-                                    restaurant.getName(), address.getCity(), address.getStreet(), address.getBuildingNumber()),
+                            restaurantRepository.getReferenceById(voteToRestaurantId),
                             userRepository.getReferenceById(authUserId)));
         }
         if (createOrUpdate == UPDATE && ValidationUtil.checkReVoteTime(voteTime, endVoteChangeTime)) {
             vote = voteRepository.save(
                     new Vote(
                             voteTo.getId(), voteDate, voteTime,
-                            restaurantRepository.getExistedByNameAndAddress(
-                                    restaurant.getName(), address.getCity(), address.getStreet(), address.getBuildingNumber()),
+                            restaurantRepository.getReferenceById(voteToRestaurantId),
                             userRepository.getReferenceById(authUserId)));
         }
         return vote;
