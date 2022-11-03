@@ -3,7 +3,6 @@ package com.github.geugen.voting.web.menu;
 import com.github.geugen.voting.model.MenuItem;
 import com.github.geugen.voting.repository.MenuItemRepository;
 import com.github.geugen.voting.repository.RestaurantRepository;
-import com.github.geugen.voting.service.MenuItemService;
 import com.github.geugen.voting.util.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,8 +34,6 @@ import java.util.List;
 //@CacheConfig(cacheNames = "menu_item")
 public class AdminMenuItemController {
     static final String REST_URL = "/api/admin/restaurants/{restaurantId}/menu-items";
-
-    private final MenuItemService menuItemService;
 
     private final MenuItemRepository menuItemRepository;
 
@@ -103,7 +100,7 @@ public class AdminMenuItemController {
         log.info("update menu item {} for restaurant {}", menuItem, restaurantId);
         ValidationUtil.assureIdConsistent(menuItem, itemId);
         menuItemRepository.checkBelong(itemId, restaurantId);
-        menuItemService.save(menuItem, restaurantId);
+        save(menuItem, restaurantId);
     }
 
     @Operation(
@@ -116,10 +113,15 @@ public class AdminMenuItemController {
             @Parameter(description = "restaurant id") @PathVariable int restaurantId) {
         log.info("create menu item {} for restaurant {}", menuItem, restaurantId);
         ValidationUtil.checkNew(menuItem);
-        MenuItem created = menuItemService.save(menuItem, restaurantId);
+        MenuItem created = save(menuItem, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{itemId}")
                 .buildAndExpand(restaurantId, created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
+    }
+
+    private MenuItem save(MenuItem menuItem, int restaurantId) {
+        menuItem.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
+        return menuItemRepository.save(menuItem);
     }
 }
