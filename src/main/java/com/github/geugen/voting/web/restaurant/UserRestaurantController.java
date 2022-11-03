@@ -2,7 +2,6 @@ package com.github.geugen.voting.web.restaurant;
 
 
 import com.github.geugen.voting.model.Restaurant;
-import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.RestaurantRepository;
 import com.github.geugen.voting.repository.VoteRepository;
 import com.github.geugen.voting.to.RestaurantTo;
@@ -21,13 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.geugen.voting.util.RestaurantsUtil.createUserRestaurantTos;
-import static com.github.geugen.voting.util.RestaurantsUtil.createVoteMarkUserRestaurantTo;
-import static com.github.geugen.voting.web.vote.UserVoteController.NOT_VOTED;
-import static com.github.geugen.voting.web.vote.UserVoteController.VOTED;
+import static com.github.geugen.voting.util.RestaurantsUtil.*;
 
 
 @Tag(
@@ -71,7 +66,7 @@ public class UserRestaurantController {
 
     @Operation(
             summary = "Get restaurant with menu items by name and address",
-            description = "Returns found restaurant profile")
+            description = "Returns found restaurant with menu items")
     @GetMapping("/by-name-and-address")
     public RestaurantTo get(
             @Parameter(description = "restaurant name") @RequestParam @NotBlank String name,
@@ -90,21 +85,8 @@ public class UserRestaurantController {
     public List<VoteMarkRestaurantTo> getAllWithVoteMark(@AuthenticationPrincipal AuthUser authUser) {
         int authUserId = authUser.id();
         log.info("getAllWithVoteMark for user {}", authUserId);
-        List<Restaurant> restaurants = restaurantRepository.getAllWithMenuItems();
-        Vote vote = voteRepository.getVote(authUserId, LocalDate.now());
-        Integer votedRestaurantId = null;
-        if (vote != null) {
-            votedRestaurantId = vote.getRestaurant().getId();
-        }
-        List<VoteMarkRestaurantTo> voteMarkRestaurantToList = new ArrayList<>();
-        for (Restaurant restaurant : restaurants) {
-            if (votedRestaurantId != null && votedRestaurantId.equals(restaurant.getId())) {
-                voteMarkRestaurantToList.add(createVoteMarkUserRestaurantTo(restaurant, VOTED));
-            } else {
-                voteMarkRestaurantToList.add(createVoteMarkUserRestaurantTo(restaurant, NOT_VOTED));
-            }
-        }
-        return voteMarkRestaurantToList;
+        return createVoteMarkRestaurantTos(
+                restaurantRepository.getAllWithMenuItems(), voteRepository.getVote(authUserId, LocalDate.now()));
     }
 
     @Operation(
@@ -115,19 +97,8 @@ public class UserRestaurantController {
             @AuthenticationPrincipal AuthUser authUser, @Parameter(description = "restaurant id") @PathVariable int id) {
         int authUserId = authUser.id();
         log.info("getWithVoteMark restaurant {} for user {}", id, authUserId);
-        Restaurant restaurant = restaurantRepository.getExistedWithMenuItems(id);
-        Vote vote = voteRepository.getVote(authUserId, LocalDate.now());
-        Integer votedRestaurantId = null;
-        if (vote != null) {
-            votedRestaurantId = vote.getRestaurant().getId();
-        }
-        VoteMarkRestaurantTo voteMarkRestaurantTo;
-        if (votedRestaurantId != null && votedRestaurantId == id) {
-            voteMarkRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, VOTED);
-        } else {
-            voteMarkRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, NOT_VOTED);
-        }
-        return voteMarkRestaurantTo;
+        return createVoteMarkRestaurantTo(
+                restaurantRepository.getExistedWithMenuItems(id), voteRepository.getVote(authUserId, LocalDate.now()), id);
     }
 
     @Operation(
@@ -141,19 +112,8 @@ public class UserRestaurantController {
             @Parameter(description = "street") @RequestParam @NotBlank String street,
             @Parameter(description = "building number") @RequestParam @NotNull Integer number) {
         int authUserId = authUser.id();
-        Restaurant restaurant = restaurantRepository.getExistedWithMenuItemsByNameAndAddress(name, city, street, number);
         log.info("getWithVoteMarkByNameAndAddress {} with [{}, {}, {}] for user {}", name, city, street, number, authUserId);
-        Vote vote = voteRepository.getVote(authUserId, LocalDate.now());
-        Integer votedRestaurantId = null;
-        if (vote != null) {
-            votedRestaurantId = vote.getRestaurant().getId();
-        }
-        VoteMarkRestaurantTo voteMarkRestaurantTo;
-        if (votedRestaurantId != null && votedRestaurantId.equals(restaurant.getId())) {
-            voteMarkRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, VOTED);
-        } else {
-            voteMarkRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, NOT_VOTED);
-        }
-        return voteMarkRestaurantTo;
+        Restaurant restaurant = restaurantRepository.getExistedWithMenuItemsByNameAndAddress(name, city, street, number);
+        return createVoteMarkRestaurantTo(restaurant, voteRepository.getVote(authUserId, LocalDate.now()), restaurant.getId());
     }
 }
