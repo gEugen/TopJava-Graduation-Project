@@ -85,7 +85,6 @@ public class AdminRestaurantController {
         log.info("update {}", id);
         ValidationUtil.assureIdConsistent(restaurantTo, id);
         Restaurant restaurant = new Restaurant(restaurantTo.getId(), restaurantTo.getName(), restaurantTo.getAddress());
-        restaurant.setVotes(restaurantRepository.getExisted(id).getVotes());
         restaurantRepository.save(restaurant);
     }
 

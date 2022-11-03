@@ -1,5 +1,6 @@
 package com.github.geugen.voting.model;
 
+import com.github.geugen.voting.util.validation.NoHtml;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,10 +22,12 @@ public class Address extends BaseEntity {
 
     @Column(name = "city", nullable = false)
     @NotBlank
+    @NoHtml
     private String city;
 
     @Column(name = "street", nullable = false)
     @NotBlank
+    @NoHtml
     private String street;
 
     @Column(name = "building_number", nullable = false)

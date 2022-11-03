@@ -30,7 +30,6 @@ public abstract class AbstractUserController {
     //    @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
         log.info("delete {}", id);
-        voteRepository.deleteByUserId(id);
         userRepository.deleteExisted(id);
     }
 

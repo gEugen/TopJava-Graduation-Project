@@ -82,7 +82,6 @@ public class RestaurantTestData {
         Vote updatedVote2 = new Vote(VoteTestData.adminVote);
         updatedVote1.setRestaurant(getUpdated());
         updatedVote2.setRestaurant(getUpdated());
-        updatedForCompare.setVotes(List.of(updatedVote1, updatedVote2));
         return updatedForCompare;
     }
 
