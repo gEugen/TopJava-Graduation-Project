@@ -4,7 +4,6 @@ import com.github.geugen.voting.error.DataConflictException;
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.util.validation.ValidationUtil;
 import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +25,6 @@ public interface VoteRepository extends BaseRepository<Vote> {
 
     @Query("SELECT v FROM Vote v WHERE v.restaurant.id=:id AND v.voteDate=:voteDate")
     List<Vote> getVotesByRestaurant(int id, LocalDate voteDate);
-
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM Vote v WHERE v.user.id=?1")
-    void deleteByUserId(int id);
 
     Optional<Vote> findByUserIdAndVoteDate(int authUserId, LocalDate voteDate);
 

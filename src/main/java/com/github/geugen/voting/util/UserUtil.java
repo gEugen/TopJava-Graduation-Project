@@ -6,6 +6,11 @@ import com.github.geugen.voting.model.User;
 import com.github.geugen.voting.to.UserTo;
 import lombok.experimental.UtilityClass;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @UtilityClass
 public class UserUtil {
@@ -27,7 +32,9 @@ public class UserUtil {
         return user;
     }
 
-    public static UserTo getTo(User user) {
-        return new UserTo(user.getId(), user.getName(), user.getEmail(), user.getPassword());
+    public static List<User> getOrderedList(User... users) {
+        return Arrays.stream(users)
+                .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
+                .collect(Collectors.toList());
     }
 }

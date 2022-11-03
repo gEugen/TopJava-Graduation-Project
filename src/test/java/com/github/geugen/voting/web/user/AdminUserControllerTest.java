@@ -13,12 +13,12 @@ import com.github.geugen.voting.model.User;
 import com.github.geugen.voting.repository.UserRepository;
 import com.github.geugen.voting.web.AbstractControllerTest;
 
+import static com.github.geugen.voting.util.UserUtil.getOrderedList;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static com.github.geugen.voting.util.UsersUtil.getOrderedList;
 import static com.github.geugen.voting.web.user.UniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL;
 import static com.github.geugen.voting.web.user.UserTestData.*;
 
