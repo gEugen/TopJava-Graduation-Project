@@ -10,10 +10,10 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
-@Schema(title = "VoteMarkUserRestaurantTo - DTO used by User Restaurant Controller")
+@Schema(title = "VoteMarkRestaurantTo - DTO used by User Restaurant Controller")
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class VoteMarkUserRestaurantTo extends NamedTo {
+public class VoteMarkRestaurantTo extends NamedTo {
 
     @NotNull
     Address address;
@@ -22,7 +22,7 @@ public class VoteMarkUserRestaurantTo extends NamedTo {
 
     boolean voteMark;
 
-    public VoteMarkUserRestaurantTo(Integer id, String name, Address address, List<MenuItem> menuItems, boolean voteMark) {
+    public VoteMarkRestaurantTo(Integer id, String name, Address address, List<MenuItem> menuItems, boolean voteMark) {
         super(id, name);
         this.address = address;
         this.menuItems = menuItems;
@@ -31,6 +31,6 @@ public class VoteMarkUserRestaurantTo extends NamedTo {
 
     @Override
     public String toString() {
-        return "VoteMarkUserRestaurantTo:" + id + '[' + address.toString() + ']';
+        return "VoteMarkRestaurantTo:" + id + '[' + address.toString() + ']';
     }
 }

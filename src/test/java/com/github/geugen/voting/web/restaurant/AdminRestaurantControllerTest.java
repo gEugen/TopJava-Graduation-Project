@@ -3,7 +3,6 @@ package com.github.geugen.voting.web.restaurant;
 import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.repository.RestaurantRepository;
 import com.github.geugen.voting.repository.UserRepository;
-import com.github.geugen.voting.to.AdminRestaurantTo;
 import com.github.geugen.voting.util.JsonUtil;
 import com.github.geugen.voting.util.RestaurantsUtil;
 import com.github.geugen.voting.util.Util;
@@ -65,16 +64,16 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
     void createWithLocation() throws Exception {
-        AdminRestaurantTo aNew = RestaurantTestData.getNew();
+        Restaurant aNew = RestaurantTestData.getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(aNew)));
 
-        AdminRestaurantTo created = RestaurantTestData.RESTAURANT_TO_MATCHER.readFromJson(action);
+        Restaurant created = RestaurantTestData.RESTAURANT_TO_MATCHER.readFromJson(action);
         int newId = created.id();
         aNew.setId(newId);
         RestaurantTestData.RESTAURANT_TO_MATCHER.assertMatch(created, aNew);
-        RestaurantTestData.RESTAURANT_TO_MATCHER.assertMatch(RestaurantsUtil.createAdminTo(restaurantRepository.getExisted(newId)), aNew);
+        RestaurantTestData.RESTAURANT_TO_MATCHER.assertMatch(restaurantRepository.getExisted(newId), aNew);
     }
 
     @Test
@@ -138,8 +137,8 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
 //    @Transactional(propagation = Propagation.NEVER)
 //    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
 //    void updateDuplicate() throws Exception {
-//        AdminRestaurantTo invalid =
-//                new AdminRestaurantTo(
+//        Restaurant invalid =
+//                new Restaurant(
 //                        RestaurantTestData.RESTAURANT2_ID, "ASTORIA", new Address(null, "MOSCOW", "ARBAT", 10));
 //        perform(MockMvcRequestBuilders.put(REST_URL + RestaurantTestData.RESTAURANT2_ID)
 //                .contentType(MediaType.APPLICATION_JSON)

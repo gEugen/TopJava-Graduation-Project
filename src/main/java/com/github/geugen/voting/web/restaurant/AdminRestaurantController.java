@@ -3,8 +3,6 @@ package com.github.geugen.voting.web.restaurant;
 
 import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.repository.RestaurantRepository;
-import com.github.geugen.voting.to.AdminRestaurantTo;
-import com.github.geugen.voting.util.RestaurantsUtil;
 import com.github.geugen.voting.util.validation.ValidationUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,28 +40,27 @@ public class AdminRestaurantController {
 
     @Operation(summary = "Get restaurant profile list", description = "Returns restaurant profile list")
     @GetMapping()
-    public List<AdminRestaurantTo> getAll() {
+    public List<Restaurant> getAll() {
         log.info("getAll");
-        return RestaurantsUtil.createAdminRestaurantTos(restaurantRepository.findAll(Sort.by("name")));
+        return restaurantRepository.findAll(Sort.by("name"));
     }
 
     @Operation(summary = "Get restaurant profile by its id", description = "Returns found restaurant profile")
     @GetMapping("/{id}")
-    public AdminRestaurantTo get(@Parameter(description = "restaurant id") @PathVariable int id) {
+    public Restaurant get(@Parameter(description = "restaurant id") @PathVariable int id) {
         log.info("get {}", id);
-        return RestaurantsUtil.createAdminTo(restaurantRepository.getExisted(id));
+        return restaurantRepository.getExisted(id);
     }
 
     @Operation(summary = "Get restaurant profile by name and address", description = "Returns found restaurant profile")
     @GetMapping("/by-name-and-address")
-    public AdminRestaurantTo get(
+    public Restaurant get(
             @Parameter(description = "restaurant name") @RequestParam @NotBlank String name,
             @Parameter(description = "city name") @RequestParam @NotBlank String city,
             @Parameter(description = "street") @RequestParam @NotBlank String street,
             @Parameter(description = "building number") @RequestParam @NotNull Integer number) {
-        Restaurant restaurant = restaurantRepository.getExistedByNameAndAddress(name, city, street, number);
         log.info("get {} with [{}, {}, {}]", name, city, street, number);
-        return RestaurantsUtil.createAdminTo(restaurant);
+        return restaurantRepository.getExistedByNameAndAddress(name, city, street, number);
     }
 
     @Operation(summary = "Delete restaurant profile by its id", description = "Delete restaurant profile")
@@ -80,11 +77,10 @@ public class AdminRestaurantController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
 //    @CacheEvict(allEntries = true)
     public void update(
-            @Parameter(description = "restaurant profile") @Valid @RequestBody AdminRestaurantTo restaurantTo,
+            @Parameter(description = "restaurant profile") @Valid @RequestBody Restaurant restaurant,
             @Parameter(description = "restaurant id") @PathVariable int id) {
         log.info("update {}", id);
-        ValidationUtil.assureIdConsistent(restaurantTo, id);
-        Restaurant restaurant = new Restaurant(restaurantTo.getId(), restaurantTo.getName(), restaurantTo.getAddress());
+        ValidationUtil.assureIdConsistent(restaurant, id);
         restaurantRepository.save(restaurant);
     }
 
@@ -92,10 +88,10 @@ public class AdminRestaurantController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 //    @CacheEvict(allEntries = true)
     public ResponseEntity<Restaurant> createWithLocation(
-            @Parameter(description = "restaurant profile") @Valid @RequestBody AdminRestaurantTo restaurantTo) {
-        log.info("create {}", restaurantTo);
-        ValidationUtil.checkNew(restaurantTo);
-        Restaurant created = restaurantRepository.save(new Restaurant(restaurantTo.getId(), restaurantTo.getName(), restaurantTo.getAddress()));
+            @Parameter(description = "restaurant profile") @Valid @RequestBody Restaurant restaurant) {
+        log.info("create {}", restaurant);
+        ValidationUtil.checkNew(restaurant);
+        Restaurant created = restaurantRepository.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();

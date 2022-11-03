@@ -1,7 +1,7 @@
 package com.github.geugen.voting.web.vote;
 
 import com.github.geugen.voting.model.Vote;
-import com.github.geugen.voting.to.VoteMarkUserRestaurantTo;
+import com.github.geugen.voting.to.VoteMarkRestaurantTo;
 import com.github.geugen.voting.web.MatcherFactory;
 
 import java.util.List;
@@ -23,7 +23,7 @@ public class VoteTestData {
             MatcherFactory.usingIgnoringFieldsComparator(
                     Vote.class, "voteDate", "voteTime", "restaurant.menuItems", "restaurant.votes", "user.password", "user.registered", "user.votes", "user.roles");
 
-    public static final MatcherFactory.Matcher<VoteMarkUserRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteMarkUserRestaurantTo.class);
+    public static final MatcherFactory.Matcher<VoteMarkRestaurantTo> RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteMarkRestaurantTo.class);
 
     public static final int VOTE1_ID = 1;
     public static final int VOTE2_ID = 2;

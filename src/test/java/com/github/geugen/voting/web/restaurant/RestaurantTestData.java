@@ -3,7 +3,6 @@ package com.github.geugen.voting.web.restaurant;
 import com.github.geugen.voting.model.Address;
 import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.model.Vote;
-import com.github.geugen.voting.to.AdminRestaurantTo;
 import com.github.geugen.voting.web.MatcherFactory;
 import com.github.geugen.voting.web.menu.MenuItemTestData;
 import com.github.geugen.voting.web.vote.VoteTestData;
@@ -15,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RestaurantTestData {
 
-    public static final MatcherFactory.Matcher<AdminRestaurantTo> RESTAURANT_TO_MATCHER =
-            MatcherFactory.usingIgnoringFieldsComparator(AdminRestaurantTo.class, "address.id");
+    public static final MatcherFactory.Matcher<Restaurant> RESTAURANT_TO_MATCHER =
+            MatcherFactory.usingIgnoringFieldsComparator(Restaurant.class, "address.id");
 
     public static MatcherFactory.Matcher<Restaurant> RESTAURANT_UPDATE_MATCHER =
             MatcherFactory.usingAssertions(Restaurant.class,
@@ -85,8 +84,8 @@ public class RestaurantTestData {
         return updatedForCompare;
     }
 
-    public static AdminRestaurantTo getNew() {
-        return new AdminRestaurantTo(null, "NEW_RESTAURANT", new Address(null, "TULA", "LENINA", 25));
+    public static Restaurant getNew() {
+        return new Restaurant(null, "NEW_RESTAURANT", new Address(null, "TULA", "LENINA", 25));
     }
 
     public static List<Restaurant> getListOfRestaurants() {

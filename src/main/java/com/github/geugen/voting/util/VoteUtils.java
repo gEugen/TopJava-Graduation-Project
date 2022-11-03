@@ -8,6 +8,6 @@ public class VoteUtils {
 
     public static UserVoteTo createUserVoteTo(Vote vote) {
         return new UserVoteTo(
-                vote.getId(), vote.getVoteDate(), vote.getVoteTime(), RestaurantsUtil.createAdminTo(vote.getRestaurant()));
+                vote.getId(), vote.getVoteDate(), vote.getVoteTime(), vote.getRestaurant());
     }
 }

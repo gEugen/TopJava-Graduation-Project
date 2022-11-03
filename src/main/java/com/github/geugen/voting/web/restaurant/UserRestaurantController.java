@@ -5,8 +5,8 @@ import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.RestaurantRepository;
 import com.github.geugen.voting.repository.VoteRepository;
-import com.github.geugen.voting.to.UserRestaurantTo;
-import com.github.geugen.voting.to.VoteMarkUserRestaurantTo;
+import com.github.geugen.voting.to.RestaurantTo;
+import com.github.geugen.voting.to.VoteMarkRestaurantTo;
 import com.github.geugen.voting.util.RestaurantsUtil;
 import com.github.geugen.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -53,7 +53,7 @@ public class UserRestaurantController {
             description = "Returns restaurants with menu items")
     @GetMapping()
 //    @Cacheable
-    public List<UserRestaurantTo> getAll(@AuthenticationPrincipal AuthUser authUser) {
+    public List<RestaurantTo> getAll(@AuthenticationPrincipal AuthUser authUser) {
         int authUserId = authUser.id();
         log.info("getAll for user {}", authUserId);
         return createUserRestaurantTos(restaurantRepository.getAllWithMenuItems());
@@ -63,7 +63,7 @@ public class UserRestaurantController {
             summary = "Get restaurant with menu items by its id",
             description = "Returns found restaurant with menu items")
     @GetMapping("/{id}")
-    public UserRestaurantTo get(@Parameter(description = "restaurant id") @PathVariable int id) {
+    public RestaurantTo get(@Parameter(description = "restaurant id") @PathVariable int id) {
         Restaurant restaurant = restaurantRepository.getExistedWithMenuItems(id);
         log.info("get {}", id);
         return RestaurantsUtil.createUserRestaurantTo(restaurant);
@@ -73,7 +73,7 @@ public class UserRestaurantController {
             summary = "Get restaurant with menu items by name and address",
             description = "Returns found restaurant profile")
     @GetMapping("/by-name-and-address")
-    public UserRestaurantTo get(
+    public RestaurantTo get(
             @Parameter(description = "restaurant name") @RequestParam @NotBlank String name,
             @Parameter(description = "city name") @RequestParam @NotBlank String city,
             @Parameter(description = "street") @RequestParam @NotBlank String street,
@@ -87,7 +87,7 @@ public class UserRestaurantController {
             summary = "Get restaurant list with menu items and vote marks for each one by user",
             description = "Returns restaurant list with menu items and vote marks")
     @GetMapping("/with-vote-mark")
-    public List<VoteMarkUserRestaurantTo> getAllWithVoteMark(@AuthenticationPrincipal AuthUser authUser) {
+    public List<VoteMarkRestaurantTo> getAllWithVoteMark(@AuthenticationPrincipal AuthUser authUser) {
         int authUserId = authUser.id();
         log.info("getAllWithVoteMark for user {}", authUserId);
         List<Restaurant> restaurants = restaurantRepository.getAllWithMenuItems();
@@ -96,22 +96,22 @@ public class UserRestaurantController {
         if (vote != null) {
             votedRestaurantId = vote.getRestaurant().getId();
         }
-        List<VoteMarkUserRestaurantTo> voteMarkUserRestaurantToList = new ArrayList<>();
+        List<VoteMarkRestaurantTo> voteMarkRestaurantToList = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
             if (votedRestaurantId != null && votedRestaurantId.equals(restaurant.getId())) {
-                voteMarkUserRestaurantToList.add(createVoteMarkUserRestaurantTo(restaurant, VOTED));
+                voteMarkRestaurantToList.add(createVoteMarkUserRestaurantTo(restaurant, VOTED));
             } else {
-                voteMarkUserRestaurantToList.add(createVoteMarkUserRestaurantTo(restaurant, NOT_VOTED));
+                voteMarkRestaurantToList.add(createVoteMarkUserRestaurantTo(restaurant, NOT_VOTED));
             }
         }
-        return voteMarkUserRestaurantToList;
+        return voteMarkRestaurantToList;
     }
 
     @Operation(
             summary = "Get restaurant with menu items and vote mark by user",
             description = "Returns restaurant with menu items and vote mark")
     @GetMapping("/{id}/with-vote-mark")
-    public VoteMarkUserRestaurantTo getWithVoteMark(
+    public VoteMarkRestaurantTo getWithVoteMark(
             @AuthenticationPrincipal AuthUser authUser, @Parameter(description = "restaurant id") @PathVariable int id) {
         int authUserId = authUser.id();
         log.info("getWithVoteMark restaurant {} for user {}", id, authUserId);
@@ -121,20 +121,20 @@ public class UserRestaurantController {
         if (vote != null) {
             votedRestaurantId = vote.getRestaurant().getId();
         }
-        VoteMarkUserRestaurantTo voteMarkUserRestaurantTo;
+        VoteMarkRestaurantTo voteMarkRestaurantTo;
         if (votedRestaurantId != null && votedRestaurantId == id) {
-            voteMarkUserRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, VOTED);
+            voteMarkRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, VOTED);
         } else {
-            voteMarkUserRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, NOT_VOTED);
+            voteMarkRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, NOT_VOTED);
         }
-        return voteMarkUserRestaurantTo;
+        return voteMarkRestaurantTo;
     }
 
     @Operation(
             summary = "Get restaurant with menu items by name and address",
             description = "Returns restaurant with menu items")
     @GetMapping("/with-vote-mark-by-name-and-address")
-    public VoteMarkUserRestaurantTo getWithVoteMarkByNameAndAddress(
+    public VoteMarkRestaurantTo getWithVoteMarkByNameAndAddress(
             @AuthenticationPrincipal AuthUser authUser,
             @Parameter(description = "restaurant name") @RequestParam @NotBlank String name,
             @Parameter(description = "city name") @RequestParam @NotBlank String city,
@@ -148,12 +148,12 @@ public class UserRestaurantController {
         if (vote != null) {
             votedRestaurantId = vote.getRestaurant().getId();
         }
-        VoteMarkUserRestaurantTo voteMarkUserRestaurantTo;
+        VoteMarkRestaurantTo voteMarkRestaurantTo;
         if (votedRestaurantId != null && votedRestaurantId.equals(restaurant.getId())) {
-            voteMarkUserRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, VOTED);
+            voteMarkRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, VOTED);
         } else {
-            voteMarkUserRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, NOT_VOTED);
+            voteMarkRestaurantTo = createVoteMarkUserRestaurantTo(restaurant, NOT_VOTED);
         }
-        return voteMarkUserRestaurantTo;
+        return voteMarkRestaurantTo;
     }
 }

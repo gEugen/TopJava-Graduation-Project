@@ -1,6 +1,7 @@
 package com.github.geugen.voting.to;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.util.DateTimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
@@ -25,9 +26,9 @@ public class UserVoteTo extends BaseTo {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     LocalTime voteTime;
 
-    AdminRestaurantTo restaurant;
+    Restaurant restaurant;
 
-    public UserVoteTo(Integer id, LocalDate voteDate, LocalTime voteTime, AdminRestaurantTo restaurant) {
+    public UserVoteTo(Integer id, LocalDate voteDate, LocalTime voteTime, Restaurant restaurant) {
         super(id);
         this.voteDate = voteDate;
         this.voteTime = voteTime;

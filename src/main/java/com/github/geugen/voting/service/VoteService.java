@@ -1,11 +1,11 @@
 package com.github.geugen.voting.service;
 
 import com.github.geugen.voting.model.Address;
+import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.RestaurantRepository;
 import com.github.geugen.voting.repository.UserRepository;
 import com.github.geugen.voting.repository.VoteRepository;
-import com.github.geugen.voting.to.AdminRestaurantTo;
 import com.github.geugen.voting.to.UserVoteTo;
 import com.github.geugen.voting.util.validation.ValidationUtil;
 import lombok.AllArgsConstructor;
@@ -41,7 +41,7 @@ public class VoteService {
         LocalDateTime localDateTime = LocalDateTime.now();
         LocalTime voteTime = localDateTime.toLocalTime();
         LocalDate voteDate = localDateTime.toLocalDate();
-        AdminRestaurantTo restaurant = voteTo.getRestaurant();
+        Restaurant restaurant = voteTo.getRestaurant();
         Address address = restaurant.getAddress();
         Vote vote = null;
         if (createOrUpdate == CREATE) {
