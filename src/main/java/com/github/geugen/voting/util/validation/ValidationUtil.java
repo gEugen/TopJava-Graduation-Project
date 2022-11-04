@@ -53,6 +53,13 @@ public class ValidationUtil {
         return obj;
     }
 
+    public static <T> T checkExisted(T obj, LocalDate requestDate) {
+        if (obj == null) {
+            throw new IllegalRequestDataException("Entity for date=" + requestDate + " not found");
+        }
+        return obj;
+    }
+
     //  https://stackoverflow.com/a/65442410/548473
     @NonNull
     public static Throwable getRootCause(@NonNull Throwable t) {

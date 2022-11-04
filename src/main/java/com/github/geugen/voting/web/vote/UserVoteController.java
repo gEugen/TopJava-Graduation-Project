@@ -26,8 +26,7 @@ import java.time.LocalDate;
 
 import static com.github.geugen.voting.util.VoteUtils.createSaveVoteTo;
 import static com.github.geugen.voting.util.VoteUtils.createUserVoteTo;
-import static com.github.geugen.voting.util.validation.ValidationUtil.assureIdConsistent;
-import static com.github.geugen.voting.util.validation.ValidationUtil.checkNew;
+import static com.github.geugen.voting.util.validation.ValidationUtil.*;
 
 
 @Tag(
@@ -72,7 +71,7 @@ public class UserVoteController {
         int authUserId = authUser.id();
         log.info("getVote on date= {} by user= {}", requestDate, authUserId);
         Vote vote = voteRepository.getVote(authUserId, requestDate);
-        return createUserVoteTo(vote);
+        return createUserVoteTo(checkExisted(vote, requestDate));
     }
 
     @Operation(
