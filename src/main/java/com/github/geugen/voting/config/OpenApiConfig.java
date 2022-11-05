@@ -31,8 +31,7 @@ import org.springframework.context.annotation.Configuration;
                         - User3:  user3@yandex.ru / password3<br>
                         - User4:  user4@yandex.ru / password4<br>
                         - User5:  user5@yandex.ru / password5<br>
-                        - User6:  user6@yandex.ru / password6<br>
-                        - Guest: guest@gmail.com / guest</p>
+                        - User6:  user6@yandex.ru / password6</p>
                         """,
                 contact = @Contact(name = "Evgeny Prokofiev", email = "eug.tackleberry@gmail.com")
         ),
