@@ -12,10 +12,11 @@ import java.time.LocalDate;
 
 @Entity
 @Table(
-        name = "menu_item", uniqueConstraints = @UniqueConstraint(columnNames = {"restaurant_id", "name"}, name = "uk_restaurant_name"),
+        name = "menu_item",
         indexes = {
-                @Index(name = "restaurant_registered_idx", columnList = "restaurant_id, registered"),
-                @Index(name = "dish_restaurant_idx", columnList = "id, restaurant_id")
+                @Index(name = "uk_registered_name_restaurant_idx", columnList = "registered, name, restaurant_id", unique = true),
+                @Index(name = "registered_restaurant_idx", columnList = "registered, restaurant_id"),
+                @Index(name = "restaurant_menu_item_idx", columnList = "restaurant_id, id")
         })
 @Getter
 @Setter

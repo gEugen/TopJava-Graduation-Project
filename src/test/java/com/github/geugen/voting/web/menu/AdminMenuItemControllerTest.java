@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.github.geugen.voting.web.restaurant.RestaurantTestData.*;
 import static com.github.geugen.voting.web.user.UserTestData.ADMIN_MAIL;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -53,7 +52,7 @@ class AdminMenuItemControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + MenuItemTestData.DISH4_ID, RESTAURANT2_ID))
                 .andExpect(status().isNoContent());
-        assertFalse(repository.get(RESTAURANT2_ID, MenuItemTestData.DISH4_ID).isPresent());
+        assertFalse(repository.get(MenuItemTestData.DISH4_ID, RESTAURANT2_ID).isPresent());
     }
 
     @Test
@@ -132,27 +131,25 @@ class AdminMenuItemControllerTest extends AbstractControllerTest {
     @Test
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
-    void updateDuplicate() {
+    void updateDuplicate() throws Exception {
         MenuItem invalid = new MenuItem(MenuItemTestData.DISH5_ID, "Scrambled eggs", 90);
-        assertThrows(Exception.class, () ->
-                perform(MockMvcRequestBuilders.put(REST_URL + MenuItemTestData.DISH5_ID, RESTAURANT2_ID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtil.writeValue(invalid)))
-                        .andDo(print())
-        );
+
+        perform(MockMvcRequestBuilders.put(REST_URL + MenuItemTestData.DISH5_ID, RESTAURANT2_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isConflict());
     }
 
     @Test
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
-    void createDuplicate() {
+    void createDuplicate() throws Exception {
         MenuItem invalid = new MenuItem(null, "Scrambled eggs", 90);
-        assertThrows(Exception.class, () ->
-                perform(MockMvcRequestBuilders.post(REST_URL, RESTAURANT2_ID)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtil.writeValue(invalid)))
-                        .andDo(print())
-                        .andExpect(status().isUnprocessableEntity())
-        );
+        perform(MockMvcRequestBuilders.post(REST_URL, RESTAURANT2_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isConflict());
     }
 }

@@ -9,18 +9,25 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static com.github.geugen.voting.util.validation.ValidationUtil.checkExisted;
+
 
 @Transactional(readOnly = true)
 public interface MenuItemRepository extends BaseRepository<MenuItem> {
 
-    @Query("SELECT mi FROM MenuItem mi WHERE mi.restaurant.id=:restaurantId and mi.registered=:date")
-    List<MenuItem> getAll(int restaurantId, LocalDate date);
+    @Query("SELECT mi FROM MenuItem mi WHERE mi.restaurant.id=:restaurantId and mi.id = :id")
+    Optional<MenuItem> get(int restaurantId, int id);
 
-    @Query("SELECT mi FROM MenuItem mi WHERE mi.id = :id and mi.restaurant.id = :restaurantId")
-    Optional<MenuItem> get(int id, int restaurantId);
+    @Query("SELECT mi FROM MenuItem mi WHERE mi.registered=:requestedDate and mi.restaurant.id=:restaurantId")
+    Optional<List<MenuItem>> getAll(LocalDate requestedDate, int restaurantId);
 
-    default MenuItem checkBelong(int id, int restaurantId) {
-        return get(id, restaurantId).orElseThrow(
+    default List<MenuItem> getAllExisted(LocalDate requestedDate, int restaurantId) {
+        Optional<List<MenuItem>> list = getAll(requestedDate, restaurantId);
+        return list.orElseGet(() -> checkExisted(null, restaurantId));
+    }
+
+    default MenuItem checkBelongAndGet(int restaurantId, int id) {
+        return get(restaurantId, id).orElseThrow(
                 () -> new DataConflictException("MenuItem id=" + id + " doesn't belong to Restaurant id=" + restaurantId));
     }
 }

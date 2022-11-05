@@ -45,8 +45,7 @@ public class AdminMenuItemController {
     @GetMapping()
     public List<MenuItem> getActualByRestaurant(@Parameter(description = "restaurant id") @PathVariable int restaurantId) {
         log.info("get {}", restaurantId);
-        restaurantRepository.getExisted(restaurantId);
-        return menuItemRepository.getAll(restaurantId, LocalDate.now());
+        return menuItemRepository.getAllExisted(LocalDate.now(), restaurantId);
     }
 
     @Operation(
@@ -57,20 +56,18 @@ public class AdminMenuItemController {
             @Parameter(description = "restaurant id") @PathVariable int restaurantId,
             @Parameter(description = "request date") @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestDate) {
         log.info("get {}", restaurantId);
-        restaurantRepository.getExisted(restaurantId);
-        return menuItemRepository.getAll(restaurantId, requestDate);
+        return menuItemRepository.getAllExisted(requestDate, restaurantId);
     }
 
     @Operation(
             summary = "Get menu item for restaurant by its ides",
             description = "Returns response with menu item")
     @GetMapping("/{itemId}")
-    public ResponseEntity<MenuItem> get(
+    public MenuItem get(
             @Parameter(description = "restaurant id") @PathVariable int restaurantId,
             @Parameter(description = "menu item id") @PathVariable int itemId) {
         log.info("get menu item {} for restaurant {}", itemId, restaurantId);
-        menuItemRepository.checkBelong(itemId, restaurantId);
-        return ResponseEntity.of(menuItemRepository.findById(itemId));
+        return menuItemRepository.checkBelongAndGet(restaurantId, itemId);
     }
 
     @Operation(
@@ -83,7 +80,7 @@ public class AdminMenuItemController {
             @Parameter(description = "restaurant id") @PathVariable int restaurantId,
             @Parameter(description = "menu item id") @PathVariable int itemId) {
         log.info("delete menu item {} for restaurant {}", restaurantId, itemId);
-        MenuItem menuItem = menuItemRepository.checkBelong(itemId, restaurantId);
+        MenuItem menuItem = menuItemRepository.checkBelongAndGet(restaurantId, itemId);
         menuItemRepository.delete(menuItem);
     }
 
@@ -99,8 +96,10 @@ public class AdminMenuItemController {
             @Parameter(description = "menu item id") @PathVariable int itemId) {
         log.info("update menu item {} for restaurant {}", menuItem, restaurantId);
         ValidationUtil.assureIdConsistent(menuItem, itemId);
-        menuItemRepository.checkBelong(itemId, restaurantId);
-        save(menuItem, restaurantId);
+        MenuItem updatableItem = menuItemRepository.checkBelongAndGet(restaurantId, itemId);
+        updatableItem.setName(menuItem.getName());
+        updatableItem.setPrice(menuItem.getPrice());
+        menuItemRepository.save(updatableItem);
     }
 
     @Operation(
@@ -113,15 +112,11 @@ public class AdminMenuItemController {
             @Parameter(description = "restaurant id") @PathVariable int restaurantId) {
         log.info("create menu item {} for restaurant {}", menuItem, restaurantId);
         ValidationUtil.checkNew(menuItem);
-        MenuItem created = save(menuItem, restaurantId);
+        menuItem.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
+        MenuItem created = menuItemRepository.save(menuItem);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{itemId}")
                 .buildAndExpand(restaurantId, created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
-    }
-
-    private MenuItem save(MenuItem menuItem, int restaurantId) {
-        menuItem.setRestaurant(restaurantRepository.getReferenceById(restaurantId));
-        return menuItemRepository.save(menuItem);
     }
 }

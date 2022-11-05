@@ -5,13 +5,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 
 @Entity
 @Table(name = "address", indexes = @Index(name = "unique_address_idx", columnList = "city, street, building_number", unique = true))
@@ -31,8 +31,8 @@ public class Address extends BaseEntity {
     private String street;
 
     @Column(name = "building_number", nullable = false)
-    @Positive
-    private Integer buildingNumber;
+    @Range(min = 1)
+    private int buildingNumber;
 
     public Address(Integer id, String city, String street, int buildingNumber) {
         super(id);
