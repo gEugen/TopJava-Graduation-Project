@@ -29,6 +29,6 @@ public interface VoteRepository extends BaseRepository<Vote> {
 
     default Vote checkAndGetBelong(int id, int userId) {
         return getVote(id, userId).orElseThrow(
-                () -> new DataConflictException("Vote id=" + id + " doesn't belong to User id=" + userId));
+                () -> new DataConflictException("Vote id=" + id + " doesn't belong to User id=" + userId + " or does not exist"));
     }
 }

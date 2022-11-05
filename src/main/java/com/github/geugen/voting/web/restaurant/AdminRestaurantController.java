@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -31,7 +32,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-//@CacheConfig(cacheNames = "restaurant")
 @AllArgsConstructor
 @Validated
 public class AdminRestaurantController {
@@ -68,7 +68,7 @@ public class AdminRestaurantController {
     @Operation(summary = "Delete restaurant profile by id", description = "Delete restaurant profile")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-//    @CacheEvict(allEntries = true)
+    @Transactional
     public void delete(@Parameter(description = "restaurant id") @PathVariable int id) {
         log.info("delete {}", id);
         restaurantRepository.deleteExisted(id);
@@ -77,7 +77,7 @@ public class AdminRestaurantController {
     @Operation(summary = "Update restaurant profile by id", description = "Updates restaurant profile")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-//    @CacheEvict(allEntries = true)
+    @Transactional
     public void update(
             @Parameter(description = "restaurant profile") @Valid @RequestBody Restaurant restaurant,
             @Parameter(description = "restaurant id") @PathVariable @Min(1) int id) {
@@ -88,7 +88,6 @@ public class AdminRestaurantController {
 
     @Operation(summary = "Create new restaurant profile", description = "Creates new restaurant profile and returns response with it")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-//    @CacheEvict(allEntries = true)
     public ResponseEntity<Restaurant> createWithLocation(
             @Parameter(description = "restaurant profile") @Valid @RequestBody Restaurant restaurant) {
         log.info("create {}", restaurant);

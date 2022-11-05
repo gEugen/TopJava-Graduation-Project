@@ -1,4 +1,5 @@
-# TopJavaGraduationProject Release Notes
+# Voting Management System Release Notes
 
 ### VotingManagementSystem v.1
-- created 22.10.2022
+- created 2022-10-22
+- fixed 2022-11-05

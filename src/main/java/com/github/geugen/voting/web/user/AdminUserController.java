@@ -26,7 +26,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = AdminUserController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-//@CacheConfig(cacheNames = "users")
 public class AdminUserController extends AbstractUserController {
 
     static final String REST_URL = "/api/admin/users";
@@ -55,7 +54,6 @@ public class AdminUserController extends AbstractUserController {
 
     @Operation(summary = "Create new user profile", description = "Creates new user profile and returns response with new user profile")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-//    @CacheEvict(allEntries = true)
     public ResponseEntity<User> createWithLocation(@Parameter(description = "user profile") @Valid @RequestBody User user) {
         log.info("create {}", user);
         ValidationUtil.checkNew(user);
@@ -69,7 +67,7 @@ public class AdminUserController extends AbstractUserController {
     @Operation(summary = "Update user profile", description = "Updates user profile")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-//    @CacheEvict(allEntries = true)
+    @Transactional
     public void update(
             @Parameter(description = "updated user profile") @Valid @RequestBody User user,
             @Parameter(description = "user id") @PathVariable int id) {
@@ -89,7 +87,6 @@ public class AdminUserController extends AbstractUserController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
-//    @CacheEvict(allEntries = true)
     public void enable(
             @Parameter(description = "id of user") @PathVariable int id,
             @Parameter(description = "enable / disable flag") @RequestParam boolean enabled) {

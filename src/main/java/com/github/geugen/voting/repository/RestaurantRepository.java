@@ -10,7 +10,6 @@ import java.util.List;
 
 
 @Transactional(readOnly = true)
-//@CacheConfig(cacheNames = "restaurant")
 public interface RestaurantRepository extends BaseRepository<Restaurant> {
 
     //    @Cacheable

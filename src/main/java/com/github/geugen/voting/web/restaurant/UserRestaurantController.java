@@ -34,7 +34,6 @@ import static com.github.geugen.voting.util.RestaurantsUtil.*;
 @RestController
 @RequestMapping(value = UserRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-//@CacheConfig(cacheNames = "restaurant")
 @AllArgsConstructor
 @Validated
 public class UserRestaurantController {
@@ -49,7 +48,6 @@ public class UserRestaurantController {
             summary = "Get all restaurants with menu items",
             description = "Returns restaurants with menu items")
     @GetMapping()
-//    @Cacheable
     public List<RestaurantTo> getAll(@AuthenticationPrincipal AuthUser authUser) {
         LocalDate requestDate = LocalDate.now();
         int authUserId = authUser.id();

@@ -27,7 +27,6 @@ public abstract class AbstractUserController {
         binder.addValidators(emailValidator);
     }
 
-    //    @CacheEvict(value = "users", allEntries = true)
     public void delete(int id) {
         log.info("delete {}", id);
         userRepository.deleteExisted(id);

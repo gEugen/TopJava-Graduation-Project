@@ -13,10 +13,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.time.LocalDate;
@@ -31,7 +34,7 @@ import java.util.List;
 @RequestMapping(value = AdminMenuItemController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
-//@CacheConfig(cacheNames = "menu_item")
+@Validated
 public class AdminMenuItemController {
     static final String REST_URL = "/api/admin/restaurants/{restaurantId}/menu-items";
 
@@ -43,7 +46,7 @@ public class AdminMenuItemController {
             summary = "Get actual menu item list for restaurant by its id",
             description = "Returns actual menu item list")
     @GetMapping()
-    public List<MenuItem> getActualByRestaurant(@Parameter(description = "restaurant id") @PathVariable int restaurantId) {
+    public List<MenuItem> getActualByRestaurant(@Parameter(description = "restaurant id") @PathVariable @Min(1) int restaurantId) {
         log.info("get {}", restaurantId);
         return menuItemRepository.getAllExisted(LocalDate.now(), restaurantId);
     }
@@ -53,7 +56,7 @@ public class AdminMenuItemController {
             description = "Returns menu item list")
     @GetMapping("/by-date")
     public List<MenuItem> getAllByRestaurantForGivenDay(
-            @Parameter(description = "restaurant id") @PathVariable int restaurantId,
+            @Parameter(description = "restaurant id") @PathVariable @Min(1) int restaurantId,
             @Parameter(description = "request date") @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestDate) {
         log.info("get {}", restaurantId);
         return menuItemRepository.getAllExisted(requestDate, restaurantId);
@@ -64,8 +67,8 @@ public class AdminMenuItemController {
             description = "Returns response with menu item")
     @GetMapping("/{itemId}")
     public MenuItem get(
-            @Parameter(description = "restaurant id") @PathVariable int restaurantId,
-            @Parameter(description = "menu item id") @PathVariable int itemId) {
+            @Parameter(description = "restaurant id") @PathVariable @Min(1) int restaurantId,
+            @Parameter(description = "menu item id") @PathVariable @Min(1) int itemId) {
         log.info("get menu item {} for restaurant {}", itemId, restaurantId);
         return menuItemRepository.checkBelongAndGet(restaurantId, itemId);
     }
@@ -75,10 +78,9 @@ public class AdminMenuItemController {
             description = "Deletes menu item")
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-//    @CacheEvict(allEntries = true)
     public void delete(
-            @Parameter(description = "restaurant id") @PathVariable int restaurantId,
-            @Parameter(description = "menu item id") @PathVariable int itemId) {
+            @Parameter(description = "restaurant id") @PathVariable @Min(1) int restaurantId,
+            @Parameter(description = "menu item id") @PathVariable @Min(1) int itemId) {
         log.info("delete menu item {} for restaurant {}", restaurantId, itemId);
         MenuItem menuItem = menuItemRepository.checkBelongAndGet(restaurantId, itemId);
         menuItemRepository.delete(menuItem);
@@ -89,11 +91,11 @@ public class AdminMenuItemController {
             description = "Updates and returns response with updated menu item")
     @PutMapping(value = "/{itemId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-//    @CacheEvict(allEntries = true)
+    @Transactional
     public void update(
             @Parameter(description = "updated menu item") @Valid @RequestBody MenuItem menuItem,
-            @Parameter(description = "restaurant id") @PathVariable int restaurantId,
-            @Parameter(description = "menu item id") @PathVariable int itemId) {
+            @Parameter(description = "restaurant id") @PathVariable @Min(1) int restaurantId,
+            @Parameter(description = "menu item id") @PathVariable @Min(1) int itemId) {
         log.info("update menu item {} for restaurant {}", menuItem, restaurantId);
         ValidationUtil.assureIdConsistent(menuItem, itemId);
         MenuItem updatableItem = menuItemRepository.checkBelongAndGet(restaurantId, itemId);
@@ -106,10 +108,9 @@ public class AdminMenuItemController {
             summary = "Create new menu item for restaurant by its id",
             description = "Creates new menu item and returns response with new menu item")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-//    @CacheEvict(allEntries = true)
     public ResponseEntity<MenuItem> createWithLocation(
             @Parameter(description = "created menu item") @Valid @RequestBody MenuItem menuItem,
-            @Parameter(description = "restaurant id") @PathVariable int restaurantId) {
+            @Parameter(description = "restaurant id") @PathVariable @Min(1) int restaurantId) {
         log.info("create menu item {} for restaurant {}", menuItem, restaurantId);
         ValidationUtil.checkNew(menuItem);
         menuItem.setRestaurant(restaurantRepository.getReferenceById(restaurantId));

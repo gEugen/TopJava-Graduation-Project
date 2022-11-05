@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 
-@Schema(title = "UserTo - DTO used by Profile Controller")
+@Schema(title = "UserTo - User Profile DTO for Profile Controller")
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class UserTo extends NamedTo implements HasIdAndEmail {

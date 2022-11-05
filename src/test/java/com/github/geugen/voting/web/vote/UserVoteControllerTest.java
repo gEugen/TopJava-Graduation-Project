@@ -11,8 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -36,7 +34,6 @@ public class UserVoteControllerTest extends AbstractControllerTest {
     private VoteRepository voteRepository;
 
     @Test
-//    @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = USER6_MAIL)
     void vote() throws Exception {
         setEndVoteChangeTime(LocalTime.MAX);
@@ -55,7 +52,6 @@ public class UserVoteControllerTest extends AbstractControllerTest {
 
 
     @Test
-//    @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = USER3_MAIL)
     void reVote() throws Exception {
         setEndVoteChangeTime(LocalTime.MAX);
@@ -73,7 +69,6 @@ public class UserVoteControllerTest extends AbstractControllerTest {
     }
 
     @Test
-//    @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = USER3_MAIL)
     void nonValidReVoteAfterTimeIsOver() throws Exception {
         setEndVoteChangeTime(LocalTime.MIN);
@@ -91,7 +86,6 @@ public class UserVoteControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = USER3_MAIL)
     void reVoteWithNotOwn() throws Exception {
         setEndVoteChangeTime(LocalTime.MAX);

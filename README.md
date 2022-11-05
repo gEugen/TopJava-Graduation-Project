@@ -13,6 +13,7 @@ Build a voting system for deciding where to have lunch.
 * Admin can input a restaurant and it's lunch menu of the day (2-5 items usually, just a menuItem name and price)
 * Menu changes each day (admins do the updates)
 * Users can vote on which restaurant they want to have lunch at
+* User can vote for the first time during the day each day
 * Only one vote counted per user
 * If user votes again the same day:
     - If it is before 11:00 we assume that he changed his mind.
@@ -34,5 +35,4 @@ User3:  user3@yandex.ru / password3
 User4:  user4@yandex.ru / password4
 User5:  user5@yandex.ru / password5
 User6:  user6@yandex.ru / password6
-Guest: guest@gmail.com / guest
 ```

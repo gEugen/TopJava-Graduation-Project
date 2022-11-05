@@ -17,11 +17,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.net.URI;
 import java.time.LocalDate;
 
@@ -37,6 +38,7 @@ import static com.github.geugen.voting.util.validation.ValidationUtil.*;
 @RequestMapping(value = UserVoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @AllArgsConstructor
+@Validated
 public class UserVoteController {
 
     public static final boolean VOTED = true;
@@ -55,7 +57,7 @@ public class UserVoteController {
             summary = "Get own vote with restaurant and user details by id",
             description = "Returns vote with details")
     @GetMapping("/{id}")
-    public UserVoteTo get(@AuthenticationPrincipal AuthUser authUser, @Parameter(description = "vote id") @PathVariable int id) {
+    public UserVoteTo get(@AuthenticationPrincipal AuthUser authUser, @Parameter(description = "vote id") @PathVariable @Min(1) int id) {
         int authUserId = authUser.id();
         log.info("getVote with id= {} by user= {}", id, authUserId);
         Vote vote = voteRepository.checkAndGetBelong(id, authUserId);
@@ -108,10 +110,9 @@ public class UserVoteController {
             description = "Updates vote details")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Transactional
     public void reVote(
             @AuthenticationPrincipal AuthUser authUser,
-            @Parameter(description = "vote DTO") @Valid @RequestBody InputSaveVoteTo voteTo, @PathVariable int id) {
+            @Parameter(description = "vote DTO") @Valid @RequestBody InputSaveVoteTo voteTo, @PathVariable @Min(1) int id) {
         int authUserId = authUser.id();
         log.info("reVote user= {}", authUserId);
         assureIdConsistent(voteTo, id);
