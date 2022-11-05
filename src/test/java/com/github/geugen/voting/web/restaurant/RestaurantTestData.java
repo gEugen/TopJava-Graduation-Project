@@ -3,10 +3,13 @@ package com.github.geugen.voting.web.restaurant;
 import com.github.geugen.voting.model.Address;
 import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.model.Vote;
+import com.github.geugen.voting.to.RestaurantTo;
+import com.github.geugen.voting.to.VoteMarkRestaurantTo;
 import com.github.geugen.voting.web.MatcherFactory;
 import com.github.geugen.voting.web.menu.MenuItemTestData;
 import com.github.geugen.voting.web.vote.VoteTestData;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +41,10 @@ public class RestaurantTestData {
                         throw new UnsupportedOperationException();
                     });
 
+    public static final MatcherFactory.Matcher<RestaurantTo> USER_RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(RestaurantTo.class);
+
+    public static final MatcherFactory.Matcher<VoteMarkRestaurantTo> VOTE_MARK_RESTAURANT_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(VoteMarkRestaurantTo.class);
+
     public static final boolean VOTED = true;
     public static final boolean NOT_VOTED = false;
 
@@ -65,11 +72,12 @@ public class RestaurantTestData {
         restaurant1.setMenuItems(List.of(MenuItemTestData.MENU_ITEM_1, MenuItemTestData.MENU_ITEM_2, MenuItemTestData.MENU_ITEM_3));
         restaurant2.setMenuItems(List.of(MenuItemTestData.MENU_ITEM_4, MenuItemTestData.MENU_ITEM_5, MenuItemTestData.MENU_ITEM_6));
         restaurant3.setMenuItems(List.of(MenuItemTestData.MENU_ITEM_7, MenuItemTestData.MENU_ITEM_8, MenuItemTestData.MENU_ITEM_9));
+        restaurant4.setMenuItems(Collections.emptyList());
         restaurant5.setMenuItems(List.of(MenuItemTestData.MENU_ITEM_10, MenuItemTestData.MENU_ITEM_11));
     }
 
     public static Restaurant getUpdated() {
-        Restaurant updatedRestaurant = new Restaurant(restaurant1);
+        Restaurant updatedRestaurant = new Restaurant(restaurant3);
         updatedRestaurant.setName("ASTORIA_NEW");
         updatedRestaurant.setAddress(new Address(null, "TULA", "LENINA", 25));
         return updatedRestaurant;
@@ -77,10 +85,10 @@ public class RestaurantTestData {
 
     public static Restaurant getUpdatedForCompare() {
         Restaurant updatedForCompare = new Restaurant(getUpdated());
-        Vote updatedVote1 = new Vote(VoteTestData.user1Vote);
-        Vote updatedVote2 = new Vote(VoteTestData.adminVote);
-        updatedVote1.setRestaurant(getUpdated());
-        updatedVote2.setRestaurant(getUpdated());
+        Vote updatedVote8 = new Vote(VoteTestData.user8Vote);
+        Vote updatedVote9 = new Vote(VoteTestData.user9Vote);
+        updatedVote8.setRestaurant(getUpdated());
+        updatedVote9.setRestaurant(getUpdated());
         return updatedForCompare;
     }
 

@@ -1,5 +1,6 @@
 package com.github.geugen.voting.web.restaurant;
 
+import com.github.geugen.voting.model.Address;
 import com.github.geugen.voting.model.Restaurant;
 import com.github.geugen.voting.repository.RestaurantRepository;
 import com.github.geugen.voting.repository.UserRepository;
@@ -14,6 +15,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.github.geugen.voting.web.restaurant.RestaurantTestData.address;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -84,31 +87,30 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(invalid)))
                 .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
+                .andExpect(status().isConflict());
     }
 
-//    @Test
-//    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
-//    void createDuplicate() throws Exception {
-//        Restaurant invalid = new Restaurant(null, "YACITORIA");
-//        perform(MockMvcRequestBuilders.post(REST_URL)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(JsonUtil.writeValue(invalid)))
-//                .andDo(print())
-//                .andExpect(status().isUnprocessableEntity())
-//                .andExpect(content().string(containsString(RestaurantUniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL)));
-//    }
+    @Test
+    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
+    void createDuplicate() throws Exception {
+        Restaurant invalid = new Restaurant(null, "ASTORIA", new Address(null, "CITY", "STREET", 100));
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isConflict());
+    }
 
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
     void update() throws Exception {
         Restaurant updated = RestaurantTestData.getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL + RestaurantTestData.RESTAURANT1_ID)
+        perform(MockMvcRequestBuilders.put(REST_URL + RestaurantTestData.RESTAURANT3_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andExpect(status().isNoContent());
 
-        RestaurantTestData.RESTAURANT_UPDATE_MATCHER.assertMatch(Util.initializeAndUnproxy(restaurantRepository.getExisted(RestaurantTestData.RESTAURANT1_ID)), RestaurantTestData.getUpdatedForCompare());
+        RestaurantTestData.RESTAURANT_UPDATE_MATCHER.assertMatch(Util.initializeAndUnproxy(restaurantRepository.getExisted(RestaurantTestData.RESTAURANT3_ID)), RestaurantTestData.getUpdatedForCompare());
     }
 
     @Test
@@ -133,20 +135,19 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity());
     }
 
-//    @Test
-//    @Transactional(propagation = Propagation.NEVER)
-//    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
-//    void updateDuplicate() throws Exception {
-//        Restaurant invalid =
-//                new Restaurant(
-//                        RestaurantTestData.RESTAURANT2_ID, "ASTORIA", new Address(null, "MOSCOW", "ARBAT", 10));
-//        perform(MockMvcRequestBuilders.put(REST_URL + RestaurantTestData.RESTAURANT2_ID)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(JsonUtil.writeValue(invalid)))
-//                .andDo(print())
-//                .andExpect(status().isUnprocessableEntity())
-//                .andExpect(content().string(containsString(RestaurantUniqueMailValidator.EXCEPTION_DUPLICATE_EMAIL)));
-//    }
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    @WithUserDetails(value = UserTestData.ADMIN_MAIL)
+    void updateDuplicate() throws Exception {
+        Restaurant invalid =
+                new Restaurant(
+                        RestaurantTestData.RESTAURANT2_ID, "ASTORIA", new Address(1, "CITY", "STREET", 100));
+        perform(MockMvcRequestBuilders.put(REST_URL + RestaurantTestData.RESTAURANT2_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isConflict());
+    }
 
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)

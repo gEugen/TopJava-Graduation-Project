@@ -25,6 +25,12 @@ public class RestaurantsUtil {
                 .collect(Collectors.toList());
     }
 
+    public static List<RestaurantTo> createTestUserRestaurantTos(List<Restaurant> restaurants) {
+        return restaurants.stream().map(RestaurantsUtil::createUserRestaurantTo)
+                .sorted(Comparator.comparing(RestaurantTo::getName))
+                .collect(Collectors.toList());
+    }
+
     public static List<Restaurant> createTestAdminRestaurantTos(List<Restaurant> restaurants) {
         return restaurants.stream()
                 .sorted(Comparator.comparing(Restaurant::getName))

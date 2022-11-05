@@ -15,10 +15,11 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import static com.github.geugen.voting.util.RestaurantsUtil.*;
 @Slf4j
 //@CacheConfig(cacheNames = "restaurant")
 @AllArgsConstructor
+@Validated
 public class UserRestaurantController {
 
     static final String REST_URL = "/api/user/restaurants";
@@ -44,61 +46,66 @@ public class UserRestaurantController {
     private final VoteRepository voteRepository;
 
     @Operation(
-            summary = "Get all restaurants with menu items by authorized user",
+            summary = "Get all restaurants with menu items",
             description = "Returns restaurants with menu items")
     @GetMapping()
 //    @Cacheable
     public List<RestaurantTo> getAll(@AuthenticationPrincipal AuthUser authUser) {
+        LocalDate requestDate = LocalDate.now();
         int authUserId = authUser.id();
         log.info("getAll for user {}", authUserId);
-        return createUserRestaurantTos(restaurantRepository.getAllWithMenuItems());
+        return createUserRestaurantTos(restaurantRepository.getAllWithMenuItems(requestDate));
     }
 
     @Operation(
-            summary = "Get restaurant with menu items by its id",
-            description = "Returns found restaurant with menu items")
+            summary = "Get restaurant with menu items by id",
+            description = "Returns restaurant with menu items")
     @GetMapping("/{id}")
-    public RestaurantTo get(@Parameter(description = "restaurant id") @PathVariable int id) {
-        Restaurant restaurant = restaurantRepository.getExistedWithMenuItems(id);
+    public RestaurantTo get(@Parameter(description = "restaurant id") @PathVariable @Min(1) int id) {
+        LocalDate requestedDate = LocalDate.now();
         log.info("get {}", id);
+        Restaurant restaurant = restaurantRepository.getExistedWithMenuItems(id, requestedDate);
         return RestaurantsUtil.createUserRestaurantTo(restaurant);
     }
 
     @Operation(
             summary = "Get restaurant with menu items by name and address",
-            description = "Returns found restaurant with menu items")
+            description = "Returns restaurant with menu items")
     @GetMapping("/by-name-and-address")
-    public RestaurantTo get(
+    public RestaurantTo getByNameAndAddress(
             @Parameter(description = "restaurant name") @RequestParam @NotBlank String name,
             @Parameter(description = "city name") @RequestParam @NotBlank String city,
             @Parameter(description = "street") @RequestParam @NotBlank String street,
-            @Parameter(description = "building number") @RequestParam @NotNull Integer number) {
-        Restaurant restaurant = restaurantRepository.getExistedWithMenuItemsByNameAndAddress(name, city, street, number);
-        log.info("get {} with [{}, {}, {}]", name, city, street, number);
+            @Parameter(description = "building number") @RequestParam @Min(1) int number) {
+        LocalDate requestDate = LocalDate.now();
+        log.info("getByNameAndAddress {} with [{}, {}, {}]", name, city, street, number);
+        Restaurant restaurant = restaurantRepository.getExistedWithMenuItemsByNameAndAddress(name, city, street, number, requestDate);
         return RestaurantsUtil.createUserRestaurantTo(restaurant);
     }
 
     @Operation(
-            summary = "Get restaurant list with menu items and vote marks for each one by user",
-            description = "Returns restaurant list with menu items and vote marks")
+            summary = "Get restaurants with menu items and vote marks for each one",
+            description = "Returns restaurants with menu items and vote marks")
     @GetMapping("/with-vote-mark")
     public List<VoteMarkRestaurantTo> getAllWithVoteMark(@AuthenticationPrincipal AuthUser authUser) {
+        LocalDate requestDate = LocalDate.now();
         int authUserId = authUser.id();
-        log.info("getAllWithVoteMark for user {}", authUserId);
+        log.info("getAllWithVoteMark user {}", authUserId);
         return createVoteMarkRestaurantTos(
-                restaurantRepository.getAllWithMenuItems(), voteRepository.getVote(authUserId, LocalDate.now()));
+                restaurantRepository.getAllWithMenuItems(requestDate), voteRepository.getVote(authUserId, requestDate));
     }
 
     @Operation(
-            summary = "Get restaurant with menu items and vote mark by user",
+            summary = "Get restaurant with menu items and vote mark by id",
             description = "Returns restaurant with menu items and vote mark")
     @GetMapping("/{id}/with-vote-mark")
     public VoteMarkRestaurantTo getWithVoteMark(
-            @AuthenticationPrincipal AuthUser authUser, @Parameter(description = "restaurant id") @PathVariable int id) {
+            @AuthenticationPrincipal AuthUser authUser, @Parameter(description = "restaurant id") @PathVariable @Min(1) int id) {
+        LocalDate requestDate = LocalDate.now();
         int authUserId = authUser.id();
-        log.info("getWithVoteMark restaurant {} for user {}", id, authUserId);
+        log.info("getWithVoteMark restaurant {} user {}", id, authUserId);
         return createVoteMarkRestaurantTo(
-                restaurantRepository.getExistedWithMenuItems(id), voteRepository.getVote(authUserId, LocalDate.now()), id);
+                restaurantRepository.getExistedWithMenuItems(id, requestDate), voteRepository.getVote(authUserId, requestDate), id);
     }
 
     @Operation(
@@ -110,10 +117,11 @@ public class UserRestaurantController {
             @Parameter(description = "restaurant name") @RequestParam @NotBlank String name,
             @Parameter(description = "city name") @RequestParam @NotBlank String city,
             @Parameter(description = "street") @RequestParam @NotBlank String street,
-            @Parameter(description = "building number") @RequestParam @NotNull Integer number) {
+            @Parameter(description = "building number") @RequestParam @Min(1) int number) {
         int authUserId = authUser.id();
-        log.info("getWithVoteMarkByNameAndAddress {} with [{}, {}, {}] for user {}", name, city, street, number, authUserId);
-        Restaurant restaurant = restaurantRepository.getExistedWithMenuItemsByNameAndAddress(name, city, street, number);
-        return createVoteMarkRestaurantTo(restaurant, voteRepository.getVote(authUserId, LocalDate.now()), restaurant.getId());
+        LocalDate requestDate = LocalDate.now();
+        log.info("getWithVoteMarkByNameAndAddress {} with [{}, {}, {}] user {}", name, city, street, number, authUserId);
+        Restaurant restaurant = restaurantRepository.getExistedWithMenuItemsByNameAndAddress(name, city, street, number, requestDate);
+        return createVoteMarkRestaurantTo(restaurant, voteRepository.getVote(authUserId, requestDate), restaurant.getId());
     }
 }

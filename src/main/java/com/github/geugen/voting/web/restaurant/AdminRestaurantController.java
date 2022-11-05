@@ -13,12 +13,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
 
@@ -32,38 +33,39 @@ import java.util.List;
 @Slf4j
 //@CacheConfig(cacheNames = "restaurant")
 @AllArgsConstructor
+@Validated
 public class AdminRestaurantController {
 
     static final String REST_URL = "/api/admin/restaurants";
 
     private final RestaurantRepository restaurantRepository;
 
-    @Operation(summary = "Get restaurant profile list", description = "Returns restaurant profile list")
+    @Operation(summary = "Get restaurant profiles", description = "Returns restaurant profiles")
     @GetMapping()
     public List<Restaurant> getAll() {
         log.info("getAll");
         return restaurantRepository.findAll(Sort.by("name"));
     }
 
-    @Operation(summary = "Get restaurant profile by its id", description = "Returns found restaurant profile")
+    @Operation(summary = "Get restaurant profile by id", description = "Returns restaurant profile")
     @GetMapping("/{id}")
-    public Restaurant get(@Parameter(description = "restaurant id") @PathVariable int id) {
+    public Restaurant get(@Parameter(description = "restaurant id") @PathVariable @Min(1) int id) {
         log.info("get {}", id);
         return restaurantRepository.getExisted(id);
     }
 
-    @Operation(summary = "Get restaurant profile by name and address", description = "Returns found restaurant profile")
+    @Operation(summary = "Get restaurant profile by name and address", description = "Returns restaurant profile")
     @GetMapping("/by-name-and-address")
     public Restaurant get(
             @Parameter(description = "restaurant name") @RequestParam @NotBlank String name,
             @Parameter(description = "city name") @RequestParam @NotBlank String city,
             @Parameter(description = "street") @RequestParam @NotBlank String street,
-            @Parameter(description = "building number") @RequestParam @NotNull Integer number) {
+            @Parameter(description = "building number") @RequestParam @Min(1) int number) {
         log.info("get {} with [{}, {}, {}]", name, city, street, number);
         return restaurantRepository.getExistedByNameAndAddress(name, city, street, number);
     }
 
-    @Operation(summary = "Delete restaurant profile by its id", description = "Delete restaurant profile")
+    @Operation(summary = "Delete restaurant profile by id", description = "Delete restaurant profile")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
 //    @CacheEvict(allEntries = true)
@@ -72,13 +74,13 @@ public class AdminRestaurantController {
         restaurantRepository.deleteExisted(id);
     }
 
-    @Operation(summary = "Update restaurant profile by its id", description = "Updates restaurant profile")
+    @Operation(summary = "Update restaurant profile by id", description = "Updates restaurant profile")
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
 //    @CacheEvict(allEntries = true)
     public void update(
             @Parameter(description = "restaurant profile") @Valid @RequestBody Restaurant restaurant,
-            @Parameter(description = "restaurant id") @PathVariable int id) {
+            @Parameter(description = "restaurant id") @PathVariable @Min(1) int id) {
         log.info("update {}", id);
         ValidationUtil.assureIdConsistent(restaurant, id);
         restaurantRepository.save(restaurant);

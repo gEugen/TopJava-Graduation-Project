@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
-@Schema(title = "RestaurantTo - DTO used by User Restaurant Controller")
+@Schema(title = "RestaurantTo - Restaurant with Menu Items DTO for User Restaurant Controller")
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class RestaurantTo extends NamedTo {
@@ -28,6 +28,6 @@ public class RestaurantTo extends NamedTo {
 
     @Override
     public String toString() {
-        return "VoteMarkRestaurantTo:" + id + '[' + address.toString() + ']';
+        return "RestaurantTo:" + id + '[' + address.toString() + ']';
     }
 }
