@@ -4,7 +4,6 @@ package com.github.geugen.voting.util.validation;
 import com.github.geugen.voting.HasId;
 import com.github.geugen.voting.error.DataConflictException;
 import com.github.geugen.voting.error.IllegalRequestDataException;
-import com.github.geugen.voting.error.IllegalUniqIndexException;
 import com.github.geugen.voting.model.Vote;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.NestedExceptionUtils;
@@ -76,20 +75,22 @@ public class ValidationUtil {
 
     public static boolean checkReVoteTime(LocalTime voteTime, LocalTime endVoteChangeTime) {
         if (voteTime.isAfter(endVoteChangeTime)) {
-            throw new IllegalRequestDataException("Vote change after 11.00 a.m. is not allowed");
+            throw new DataConflictException("Vote change after 11.00 a.m. is not allowed");
         }
         return true;
-    }
-
-    public static void checkUniq(boolean indexIsPresent, int authUserId, LocalDate voteDate) {
-        if (indexIsPresent) {
-            throw new IllegalUniqIndexException("User id=" + authUserId + " has already voted today " + voteDate);
-        }
     }
 
     public static void checkIdPresence(Integer id) {
         if (id == null) {
             throw new DataConflictException("Restaurant from request body must has id");
         }
+    }
+
+    public static LocalDate checkDateConsistent(LocalDate voteDate, LocalDate dateOfUpdatableDate, int id) {
+        if (!dateOfUpdatableDate.isEqual(voteDate)) {
+            throw new DataConflictException(
+                    "Vote id= " + id + " from past date= " + dateOfUpdatableDate + " is not allowed to be updated");
+        }
+        return voteDate;
     }
 }

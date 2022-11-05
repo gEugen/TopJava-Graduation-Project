@@ -1,28 +1,25 @@
 package com.github.geugen.voting.to;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.geugen.voting.util.DateTimeUtil;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 
-@Schema(title = "SaveVoteTo")
+@Schema(title = "InputSaveVoteTo - Input Vote/Re-Vote DTO for User Vote Controller")
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class SaveVoteTo extends BaseTo {
+public class InputSaveVoteTo extends BaseTo {
 
-    @DateTimeFormat(pattern = DateTimeUtil.DATE_PATTERN)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Schema(type = "date", pattern = "yyyy:MM:dd")
     LocalDate voteDate;
 
-    @DateTimeFormat(pattern = DateTimeUtil.TIME_PATTERN)
-    @Schema(type = "date-time", pattern = "HH:mm:ss")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Schema(type = "date-time", pattern = "HH:mm:ss")
     LocalTime voteTime;
 
     Integer restaurantId;
@@ -30,7 +27,7 @@ public class SaveVoteTo extends BaseTo {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     Integer userId;
 
-    public SaveVoteTo(Integer id, LocalDate voteDate, LocalTime voteTime, Integer restaurantId, Integer userId) {
+    public InputSaveVoteTo(Integer id, LocalDate voteDate, LocalTime voteTime, Integer restaurantId, Integer userId) {
         super(id);
         this.voteDate = voteDate;
         this.voteTime = voteTime;

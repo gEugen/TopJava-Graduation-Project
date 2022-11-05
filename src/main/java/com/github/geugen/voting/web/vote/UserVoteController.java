@@ -3,7 +3,8 @@ package com.github.geugen.voting.web.vote;
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.VoteRepository;
 import com.github.geugen.voting.service.VoteService;
-import com.github.geugen.voting.to.SaveVoteTo;
+import com.github.geugen.voting.to.InputSaveVoteTo;
+import com.github.geugen.voting.to.OutputSaveVoteTo;
 import com.github.geugen.voting.to.UserVoteTo;
 import com.github.geugen.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +25,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 
-import static com.github.geugen.voting.util.VoteUtils.createSaveVoteTo;
+import static com.github.geugen.voting.util.VoteUtils.createOutputVoteTo;
 import static com.github.geugen.voting.util.VoteUtils.createUserVoteTo;
 import static com.github.geugen.voting.util.validation.ValidationUtil.*;
 
@@ -77,7 +78,7 @@ public class UserVoteController {
     @Operation(
             summary = "Get actual own vote with restaurant and user details",
             description = "Returns vote with details")
-    @GetMapping()
+    @GetMapping("actual")
     public UserVoteTo getActual(@AuthenticationPrincipal AuthUser authUser) {
         int authUserId = authUser.id();
         log.info("getActual by user= {}", authUserId);
@@ -89,9 +90,9 @@ public class UserVoteController {
             summary = "Primary vote for restaurant during the day",
             description = "Return vote with details")
     @PostMapping()
-    public ResponseEntity<SaveVoteTo> vote(
+    public ResponseEntity<OutputSaveVoteTo> vote(
             @AuthenticationPrincipal AuthUser authUser,
-            @Parameter(description = "vote DTO") @Valid @RequestBody SaveVoteTo voteTo) {
+            @Parameter(description = "vote DTO") @Valid @RequestBody InputSaveVoteTo voteTo) {
         int authUserId = authUser.id();
         log.info("vote user= {}", authUserId);
         checkNew(voteTo);
@@ -99,7 +100,7 @@ public class UserVoteController {
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(createSaveVoteTo(created));
+        return ResponseEntity.created(uriOfNewResource).body(createOutputVoteTo(created));
     }
 
     @Operation(
@@ -110,7 +111,7 @@ public class UserVoteController {
     @Transactional
     public void reVote(
             @AuthenticationPrincipal AuthUser authUser,
-            @Parameter(description = "vote DTO") @Valid @RequestBody SaveVoteTo voteTo, @PathVariable int id) {
+            @Parameter(description = "vote DTO") @Valid @RequestBody InputSaveVoteTo voteTo, @PathVariable int id) {
         int authUserId = authUser.id();
         log.info("reVote user= {}", authUserId);
         assureIdConsistent(voteTo, id);

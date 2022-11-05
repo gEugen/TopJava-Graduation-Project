@@ -17,7 +17,7 @@ import java.time.LocalTime;
 
 @Entity
 @Table(
-        name = "vote", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "vote_date"}, name = "uk_user_vote_date"),
+        name = "vote", uniqueConstraints = @UniqueConstraint(columnNames = {"vote_date", "user_id"}, name = "uk_vote_date_user"),
         indexes = @Index(name = "restaurant_idx", columnList = "restaurant_id"))
 @Getter
 @Setter
@@ -27,7 +27,7 @@ public class Vote extends BaseEntity {
     @Column(name = "vote_date", nullable = false, columnDefinition = "date default current_date", updatable = false)
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Schema(pattern = "YYYY-MM-DD")
+    @Schema(type = "date", pattern = "yyy-MM-dd")
     private LocalDate voteDate;
 
     @Column(name = "vote_time", nullable = false, columnDefinition = "time default current_time")

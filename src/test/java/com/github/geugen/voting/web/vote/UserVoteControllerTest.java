@@ -2,26 +2,29 @@ package com.github.geugen.voting.web.vote;
 
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.VoteRepository;
+import com.github.geugen.voting.to.OutputSaveVoteTo;
+import com.github.geugen.voting.util.JsonUtil;
 import com.github.geugen.voting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
 import static com.github.geugen.voting.service.VoteService.setEndVoteChangeTime;
-import static com.github.geugen.voting.util.RestaurantsUtil.createTestVoteMarkUserRestaurantTo;
-import static com.github.geugen.voting.util.RestaurantsUtil.createTestVoteMarkUserRestaurantTos;
-import static com.github.geugen.voting.web.restaurant.RestaurantTestData.*;
+import static com.github.geugen.voting.util.VoteUtils.*;
+import static com.github.geugen.voting.web.restaurant.RestaurantTestData.RESTAURANT3_ID;
+import static com.github.geugen.voting.web.restaurant.RestaurantTestData.RESTAURANT5_ID;
 import static com.github.geugen.voting.web.user.UserTestData.*;
-import static com.github.geugen.voting.web.vote.VoteTestData.RESTAURANT_TO_MATCHER;
 import static com.github.geugen.voting.web.vote.VoteTestData.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -33,66 +36,75 @@ public class UserVoteControllerTest extends AbstractControllerTest {
     private VoteRepository voteRepository;
 
     @Test
-    @WithUserDetails(value = USER5_MAIL)
-    void getWithVoteMark() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT5_ID + "/with-dishes-and-vote"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_TO_MATCHER.contentJson(createTestVoteMarkUserRestaurantTo(restaurant5, VOTED)));
-    }
-
-    @Test
-    @WithUserDetails(value = USER2_MAIL)
-    void getAllWithVoteMark() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(
-                        RESTAURANT_TO_MATCHER.contentJson(
-                                createTestVoteMarkUserRestaurantTos(
-                                        createTestVoteMarkUserRestaurantTo(restaurant1, NOT_VOTED), createTestVoteMarkUserRestaurantTo(restaurant2, NOT_VOTED),
-                                        createTestVoteMarkUserRestaurantTo(restaurant3, VOTED), createTestVoteMarkUserRestaurantTo(restaurant4, NOT_VOTED),
-                                        createTestVoteMarkUserRestaurantTo(restaurant5, NOT_VOTED))));
-    }
-
-    @Test
+//    @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = USER6_MAIL)
-    void validVoteWithCreation() throws Exception {
+    void vote() throws Exception {
         setEndVoteChangeTime(LocalTime.MAX);
-        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT2_ID))
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newVote)))
                 .andDo(print())
                 .andExpect(status().isCreated());
-
-        VOTE_SAVE_MATCHER.assertMatch(voteRepository.getVotesByRestaurant(RESTAURANT2_ID, LocalDate.now()), List.of(user6Vote));
+        OutputSaveVoteTo created = SAVE_VOTE_TO_MATCHER.readFromJson(action);
+        int newId = created.id();
+        OutputSaveVoteTo convertedNewVote = createFromInputSaveVoteTo(newVote);
+        convertedNewVote.setId(newId);
+        SAVE_VOTE_TO_MATCHER.assertMatch(created, convertedNewVote);
+        SAVE_VOTE_TO_MATCHER.assertMatch(createOutputVoteTo(voteRepository.getVote(USER6_ID, LocalDate.now())), convertedNewVote);
     }
 
+
     @Test
+//    @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = USER3_MAIL)
-    void validVoteWithUpdating() throws Exception {
+    void reVote() throws Exception {
         setEndVoteChangeTime(LocalTime.MAX);
-        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT1_ID))
+        LocalDate dateVote = LocalDate.now();
+        perform(MockMvcRequestBuilders.put(REST_URL + VOTE9_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedVote)))
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
-        List<Vote> currentVotes = voteRepository.getVotesByRestaurant(RESTAURANT1_ID, LocalDate.now());
-        List<Vote> previousVotes = voteRepository.getVotesByRestaurant(RESTAURANT3_ID, LocalDate.now());
-        VOTE_MATCHER.assertMatch(currentVotes, getTestCurrentVotes());
-        VOTE_MATCHER.assertMatch(previousVotes, getTestPreviousVotes());
+        List<Vote> withUpdatedVote = voteRepository.getVotesByRestaurant(RESTAURANT5_ID, dateVote);
+        List<Vote> withoutUpdatedVote = voteRepository.getVotesByRestaurant(RESTAURANT3_ID, dateVote);
+        SAVE_VOTE_TO_MATCHER.assertMatch(createTestOutputVoteTos(withUpdatedVote), createTestOutputVoteTos(getWithUpdatedVote()));
+        SAVE_VOTE_TO_MATCHER.assertMatch(createTestOutputVoteTos(withoutUpdatedVote), createTestOutputVoteTos(getWithoutUpdatedVote()));
     }
 
     @Test
+//    @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = USER3_MAIL)
-    void nonValidVoteAfterTimeIsOver() throws Exception {
+    void nonValidReVoteAfterTimeIsOver() throws Exception {
         setEndVoteChangeTime(LocalTime.MIN);
-        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT1_ID))
+        LocalDate dateVote = LocalDate.now();
+        perform(MockMvcRequestBuilders.put(REST_URL + VOTE9_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedVote)))
                 .andDo(print())
-                .andExpect(status().isForbidden());
+                .andExpect(status().isConflict());
 
-        List<Vote> currentVotes = voteRepository.getVotesByRestaurant(RESTAURANT1_ID, LocalDate.now());
-        List<Vote> previousVotes = voteRepository.getVotesByRestaurant(RESTAURANT3_ID, LocalDate.now());
-        VOTE_MATCHER.assertMatch(currentVotes, List.of(user1Vote, adminVote));
-        VOTE_MATCHER.assertMatch(previousVotes, List.of(user2Vote, user3Vote));
+        List<Vote> withUpdatedVote = voteRepository.getVotesByRestaurant(RESTAURANT5_ID, dateVote);
+        List<Vote> withoutUpdatedVote = voteRepository.getVotesByRestaurant(RESTAURANT3_ID, dateVote);
+        SAVE_VOTE_TO_MATCHER.assertMatch(createTestOutputVoteTos(withUpdatedVote), createTestOutputVoteTos(getNonValidWithoutUpdatedVote()));
+        SAVE_VOTE_TO_MATCHER.assertMatch(createTestOutputVoteTos(withoutUpdatedVote), createTestOutputVoteTos(getNonValidWithUpdatedVote()));
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    @WithUserDetails(value = USER3_MAIL)
+    void reVoteWithNotOwn() throws Exception {
+        setEndVoteChangeTime(LocalTime.MAX);
+        LocalDate dateVote = LocalDate.now();
+        perform(MockMvcRequestBuilders.put(REST_URL + VOTE10_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updatedVote)))
+                .andDo(print())
+                .andExpect(status().isConflict());
+
+        List<Vote> withUpdatedVote = voteRepository.getVotesByRestaurant(RESTAURANT5_ID, dateVote);
+        List<Vote> withoutUpdatedVote = voteRepository.getVotesByRestaurant(RESTAURANT3_ID, dateVote);
+        SAVE_VOTE_TO_MATCHER.assertMatch(createTestOutputVoteTos(withUpdatedVote), createTestOutputVoteTos(getNonValidWithoutUpdatedVote()));
+        SAVE_VOTE_TO_MATCHER.assertMatch(createTestOutputVoteTos(withoutUpdatedVote), createTestOutputVoteTos(getNonValidWithUpdatedVote()));
     }
 }
