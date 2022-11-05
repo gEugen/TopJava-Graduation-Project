@@ -46,7 +46,7 @@ public class ProfileController extends AbstractUserController {
     @Operation(summary = "Register own user profile by new user", description = "Registers new user profile")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<User> register(@Parameter(description = "user profile DTO") @Valid @RequestBody UserTo userTo) {
+    public ResponseEntity<User> register(@Parameter(description = "user profile dto") @Valid @RequestBody UserTo userTo) {
         log.info("register {}", userTo);
         ValidationUtil.checkNew(userTo);
         User created = prepareAndSave(UserUtil.createNewFromTo(userTo));

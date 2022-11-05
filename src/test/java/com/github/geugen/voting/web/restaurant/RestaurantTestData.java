@@ -55,13 +55,14 @@ public class RestaurantTestData {
     public static final int RESTAURANT5_ID = 5;
     public static final int NOT_FOUND = 200;
 
-    public static final Address address = new Address(1, "CITY", "STREET", 100);
+    public static final Address address1 = new Address(1, "CITY", "AVENUE", 100);
+    public static final Address address2 = new Address(2, "TOWN", "STREET", 22);
 
-    public static final Restaurant restaurant1 = new Restaurant(RESTAURANT1_ID, "ASTORIA", address);
-    public static final Restaurant restaurant2 = new Restaurant(RESTAURANT2_ID, "CONTINENTAL", address);
-    public static final Restaurant restaurant3 = new Restaurant(RESTAURANT3_ID, "PRAGUE", address);
-    public static final Restaurant restaurant4 = new Restaurant(RESTAURANT4_ID, "SUSHI BAR", address);
-    public static final Restaurant restaurant5 = new Restaurant(RESTAURANT5_ID, "NIAM-NIAM", address);
+    public static final Restaurant restaurant1 = new Restaurant(RESTAURANT1_ID, "ASTORIA", address1);
+    public static final Restaurant restaurant2 = new Restaurant(RESTAURANT2_ID, "CONTINENTAL", address1);
+    public static final Restaurant restaurant3 = new Restaurant(RESTAURANT3_ID, "PRAGUE", address2);
+    public static final Restaurant restaurant4 = new Restaurant(RESTAURANT4_ID, "SUSHI BAR", address1);
+    public static final Restaurant restaurant5 = new Restaurant(RESTAURANT5_ID, "NIAM-NIAM", address2);
 
     public static final List<Restaurant> restaurants;
     public static final List<Restaurant> restaurantsWithUserVotes;

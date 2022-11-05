@@ -1,8 +1,7 @@
 package com.github.geugen.voting.web.vote;
 
 import com.github.geugen.voting.model.Vote;
-import com.github.geugen.voting.to.InputSaveVoteTo;
-import com.github.geugen.voting.to.OutputSaveVoteTo;
+import com.github.geugen.voting.to.VoteTo;
 import com.github.geugen.voting.web.MatcherFactory;
 
 import java.util.List;
@@ -13,7 +12,10 @@ import static com.github.geugen.voting.web.user.UserTestData.*;
 
 public class VoteTestData {
 
-    public static final MatcherFactory.Matcher<OutputSaveVoteTo> SAVE_VOTE_TO_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(OutputSaveVoteTo.class, "voteDate", "voteTime");
+    public static final MatcherFactory.Matcher<VoteTo> SAVE_VOTE_TO_MATCHER =
+            MatcherFactory.usingIgnoringFieldsComparator(VoteTo.class, "voteDate", "voteTime");
+    public static final MatcherFactory.Matcher<VoteTo> OUTPUT_SAVE_VOTE_TO_MATCHER_VOTE_TO_MATCHER =
+            MatcherFactory.usingIgnoringFieldsComparator(VoteTo.class, "voteDate", "voteTime", "userId");
 
     public static final int VOTE1_ID = 1;
     public static final int VOTE2_ID = 2;
@@ -39,8 +41,8 @@ public class VoteTestData {
     public static final Vote user10Vote = new Vote(VOTE10_ID, restaurant5, user4);
     public static final Vote user11Vote = new Vote(VOTE11_ID, restaurant5, user5);
 
-    public static final InputSaveVoteTo newVote = new InputSaveVoteTo(null, null, null, RESTAURANT3_ID, USER6_ID);
-    public static final InputSaveVoteTo updatedVote = new InputSaveVoteTo(null, null, null, RESTAURANT5_ID, USER3_ID);
+    public static final VoteTo newVote = new VoteTo(null, null, null, RESTAURANT3_ID, USER6_ID);
+    public static final VoteTo updatedVote = new VoteTo(null, null, null, RESTAURANT5_ID, USER3_ID);
 
     public static List<Vote> getWithUpdatedVote() {
         return List.of(user10Vote, user11Vote, new Vote(VOTE9_ID, restaurant5, user3));

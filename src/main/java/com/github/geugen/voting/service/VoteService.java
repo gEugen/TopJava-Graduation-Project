@@ -4,7 +4,7 @@ import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.RestaurantRepository;
 import com.github.geugen.voting.repository.UserRepository;
 import com.github.geugen.voting.repository.VoteRepository;
-import com.github.geugen.voting.to.InputSaveVoteTo;
+import com.github.geugen.voting.to.VoteTo;
 import com.github.geugen.voting.util.validation.ValidationUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class VoteService {
     }
 
     @Transactional
-    public Vote saveWithVote(InputSaveVoteTo voteTo, int authUserId, boolean createOrUpdate) {
+    public Vote saveWithVote(VoteTo voteTo, int authUserId, boolean createOrUpdate) {
         Integer voteToRestaurantId = voteTo.getRestaurantId();
         checkIdPresence(voteToRestaurantId);
         LocalDateTime localDateTime = LocalDateTime.now();

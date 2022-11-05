@@ -2,7 +2,7 @@ package com.github.geugen.voting.web.vote;
 
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.VoteRepository;
-import com.github.geugen.voting.to.OutputSaveVoteTo;
+import com.github.geugen.voting.to.VoteTo;
 import com.github.geugen.voting.util.JsonUtil;
 import com.github.geugen.voting.web.AbstractControllerTest;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,8 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static com.github.geugen.voting.service.VoteService.setEndVoteChangeTime;
-import static com.github.geugen.voting.util.VoteUtils.*;
+import static com.github.geugen.voting.util.VoteUtils.createOutputVoteTo;
+import static com.github.geugen.voting.util.VoteUtils.createTestOutputVoteTos;
 import static com.github.geugen.voting.web.restaurant.RestaurantTestData.RESTAURANT3_ID;
 import static com.github.geugen.voting.web.restaurant.RestaurantTestData.RESTAURANT5_ID;
 import static com.github.geugen.voting.web.user.UserTestData.*;
@@ -42,12 +43,12 @@ public class UserVoteControllerTest extends AbstractControllerTest {
                 .content(JsonUtil.writeValue(newVote)))
                 .andDo(print())
                 .andExpect(status().isCreated());
-        OutputSaveVoteTo created = SAVE_VOTE_TO_MATCHER.readFromJson(action);
+        VoteTo created = SAVE_VOTE_TO_MATCHER.readFromJson(action);
         int newId = created.id();
-        OutputSaveVoteTo convertedNewVote = createFromInputSaveVoteTo(newVote);
-        convertedNewVote.setId(newId);
-        SAVE_VOTE_TO_MATCHER.assertMatch(created, convertedNewVote);
-        SAVE_VOTE_TO_MATCHER.assertMatch(createOutputVoteTo(voteRepository.getVote(USER6_ID, LocalDate.now())), convertedNewVote);
+//        VoteTo convertedNewVote = createFromInputSaveVoteTo(newVote);
+        newVote.setId(newId);
+        OUTPUT_SAVE_VOTE_TO_MATCHER_VOTE_TO_MATCHER.assertMatch(created, newVote);
+        SAVE_VOTE_TO_MATCHER.assertMatch(createOutputVoteTo(voteRepository.getVote(USER6_ID, LocalDate.now())), newVote);
     }
 
 

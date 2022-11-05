@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
-@Schema(title = "VoteMarkRestaurantTo - Restaurant with Menu Items and Vote mark DTO for User Restaurant Controller")
+@Schema(title = "VoteMarkRestaurantTo - used to restaurant data with menu items and vote mark getting additionally")
 @Value
 @EqualsAndHashCode(callSuper = true)
 public class VoteMarkRestaurantTo extends NamedTo {

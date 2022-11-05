@@ -12,7 +12,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface RestaurantRepository extends BaseRepository<Restaurant> {
 
-    //    @Cacheable
     @Query(
             "SELECT DISTINCT r FROM Restaurant r LEFT JOIN FETCH r.menuItems mi " +
                     "WHERE SIZE(r.menuItems)=0 OR mi.registered=:requestDate ORDER BY r.name ASC")

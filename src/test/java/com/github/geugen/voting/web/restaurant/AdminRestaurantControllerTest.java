@@ -18,7 +18,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.github.geugen.voting.web.restaurant.RestaurantTestData.address;
+import static com.github.geugen.voting.web.restaurant.RestaurantTestData.address1;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -93,7 +93,7 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
     void createDuplicate() throws Exception {
-        Restaurant invalid = new Restaurant(null, "ASTORIA", new Address(null, "CITY", "STREET", 100));
+        Restaurant invalid = new Restaurant(null, "ASTORIA", new Address(null, "CITY", "AVENUE", 100));
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(invalid)))
@@ -116,7 +116,7 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
     void updateInvalid() throws Exception {
-        Restaurant invalid = new Restaurant(RestaurantTestData.RESTAURANT1_ID, "R", address);
+        Restaurant invalid = new Restaurant(RestaurantTestData.RESTAURANT1_ID, "R", address1);
         perform(MockMvcRequestBuilders.put(REST_URL + RestaurantTestData.RESTAURANT1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(invalid)))
@@ -127,7 +127,7 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = UserTestData.ADMIN_MAIL)
     void updateHtmlUnsafe() throws Exception {
-        Restaurant invalid = new Restaurant(RestaurantTestData.RESTAURANT1_ID, "<script>alert(123)</script>", address);
+        Restaurant invalid = new Restaurant(RestaurantTestData.RESTAURANT1_ID, "<script>alert(123)</script>", address1);
         perform(MockMvcRequestBuilders.put(REST_URL + RestaurantTestData.RESTAURANT1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(invalid)))

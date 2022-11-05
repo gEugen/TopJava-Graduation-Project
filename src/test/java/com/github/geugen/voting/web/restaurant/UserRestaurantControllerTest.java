@@ -52,7 +52,7 @@ public class UserRestaurantControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER5_MAIL)
     void getWithVoteMarkByNameAndAddress() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "/with-vote-mark-by-name-and-address")
-                .param("name", "NIAM-NIAM").param("city", "CITY").param("street", "STREET").param("number", "100"))
+                .param("name", "NIAM-NIAM").param("city", "TOWN").param("street", "STREET").param("number", "22"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -85,7 +85,7 @@ public class UserRestaurantControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER5_MAIL)
     void getByNameAndAddress() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL + "/by-name-and-address")
-                .param("name", "NIAM-NIAM").param("city", "CITY").param("street", "STREET").param("number", "100"))
+                .param("name", "NIAM-NIAM").param("city", "TOWN").param("street", "STREET").param("number", "22"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))

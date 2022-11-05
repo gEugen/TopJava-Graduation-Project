@@ -3,9 +3,8 @@ package com.github.geugen.voting.web.vote;
 import com.github.geugen.voting.model.Vote;
 import com.github.geugen.voting.repository.VoteRepository;
 import com.github.geugen.voting.service.VoteService;
-import com.github.geugen.voting.to.InputSaveVoteTo;
-import com.github.geugen.voting.to.OutputSaveVoteTo;
 import com.github.geugen.voting.to.UserVoteTo;
+import com.github.geugen.voting.to.VoteTo;
 import com.github.geugen.voting.web.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -92,9 +91,9 @@ public class UserVoteController {
             summary = "Primary vote for restaurant during the day",
             description = "Return vote with details")
     @PostMapping()
-    public ResponseEntity<OutputSaveVoteTo> vote(
+    public ResponseEntity<VoteTo> vote(
             @AuthenticationPrincipal AuthUser authUser,
-            @Parameter(description = "vote DTO") @Valid @RequestBody InputSaveVoteTo voteTo) {
+            @Parameter(description = "vote dto") @Valid @RequestBody VoteTo voteTo) {
         int authUserId = authUser.id();
         log.info("vote user= {}", authUserId);
         checkNew(voteTo);
@@ -112,7 +111,7 @@ public class UserVoteController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void reVote(
             @AuthenticationPrincipal AuthUser authUser,
-            @Parameter(description = "vote DTO") @Valid @RequestBody InputSaveVoteTo voteTo, @PathVariable @Min(1) int id) {
+            @Parameter(description = "vote dto") @Valid @RequestBody VoteTo voteTo, @PathVariable @Min(1) int id) {
         int authUserId = authUser.id();
         log.info("reVote user= {}", authUserId);
         assureIdConsistent(voteTo, id);

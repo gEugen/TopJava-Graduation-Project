@@ -83,7 +83,7 @@ public class AdminUserController extends AbstractUserController {
         return ResponseEntity.of(userRepository.findByEmailIgnoreCase(email));
     }
 
-    @Operation(summary = "Enable/disable user profile by its e-mail", description = "Enable/disable user profile")
+    @Operation(summary = "Enable/disable user profile by id", description = "Enable/disable user profile")
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional

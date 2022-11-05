@@ -57,7 +57,7 @@ public class AdminMenuItemController {
     @GetMapping("/by-date")
     public List<MenuItem> getAllByRestaurantForGivenDay(
             @Parameter(description = "restaurant id") @PathVariable @Min(1) int restaurantId,
-            @Parameter(description = "request date") @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestDate) {
+            @Parameter(description = "requested date") @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate requestDate) {
         log.info("get {}", restaurantId);
         return menuItemRepository.getAllExisted(requestDate, restaurantId);
     }
@@ -93,7 +93,7 @@ public class AdminMenuItemController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     public void update(
-            @Parameter(description = "updated menu item") @Valid @RequestBody MenuItem menuItem,
+            @Parameter(description = "menu item") @Valid @RequestBody MenuItem menuItem,
             @Parameter(description = "restaurant id") @PathVariable @Min(1) int restaurantId,
             @Parameter(description = "menu item id") @PathVariable @Min(1) int itemId) {
         log.info("update menu item {} for restaurant {}", menuItem, restaurantId);
@@ -109,7 +109,7 @@ public class AdminMenuItemController {
             description = "Creates new menu item and returns response with new menu item")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MenuItem> createWithLocation(
-            @Parameter(description = "created menu item") @Valid @RequestBody MenuItem menuItem,
+            @Parameter(description = "menu item") @Valid @RequestBody MenuItem menuItem,
             @Parameter(description = "restaurant id") @PathVariable @Min(1) int restaurantId) {
         log.info("create menu item {} for restaurant {}", menuItem, restaurantId);
         ValidationUtil.checkNew(menuItem);
